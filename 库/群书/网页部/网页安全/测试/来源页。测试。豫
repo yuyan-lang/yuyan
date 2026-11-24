@@ -147,4 +147,8 @@
 「断言」于（「文同」于（「网页来源策略」于『 no-referrer , bogus , unsafe-url 』）于『unsafe-url』）于『跨过未识策』。
 「断言」于（「文同」于（「网页来源策略」于『bogus, made-up』）于『strict-origin-when-cross-origin』）于『全未识从严』。
 「断言」于（「文同」于（「网页来源策略」于『』）于『strict-origin-when-cross-origin』）于『空头从严』。
+「断言」于（「文同」于（「网页来源策并元」于『no-referrer』于『unsafe-url』）于『no-referrer』）于『并元：头优先』。
+「断言」于（「文同」于（「网页来源策并元」于『』于『no-referrer』）于『no-referrer』）于『并元：无头用元』。
+「断言」于（「文同」于（「网页来源策并元」于『』于『』）于『strict-origin-when-cross-origin』）于『并元：都无从严』。
+「断言」于（「文同」于（「网页来源策并元」于『bogus』于『origin』）于『origin』）于『并元：头不识用元』。
 「续书」于『来源页表格通过』。

@@ -16,6 +16,7 @@
 寻观「网页榫卯」之「观听」之书。
 寻观「网页安全」之「来源页」之书。
 寻观「网页安全」之「源」之书。
+寻观「网页安全」之「隔离」之书。
 寻观「豫章」之「算术」之「变通」之书。
 寻「豫章」之「形制」之「分厘」之书。
 
@@ -25,6 +26,12 @@
 「：汉语：通称网页参考策（document referrer policy）。本页发子资源请求时用的参照策：载页时从响应的 Referrer-Policy 头取，取不到就用严格跨源来源策略。待办事项：meta name=referrer 与逐元素策略、跨文档继承。
 　　文言：网页参考之策：本页发子资之请所用之参照之策：载页时自应之 Referrer-Policy 首取之，不得则用严格跨源之策。待办：meta name=referrer 与逐节之策、跨文档之承。：」
 「网页参照策」者「置匣」以「文」于『strict-origin-when-cross-origin』也。
+
+「：汉语：跨源开窗策略与跨源嵌入策略：本页响应头里的两条，空串表示没有；窗位据此给 `crossOriginIsolated`。
+　　文言：跨源开窗之策与跨源嵌入之策：本页应首之二条，空文则无；窗位据此与 `crossOriginIsolated`。：」
+「网页窗开策」者「置匣」以「文」于『』也。
+
+「网页嵌入策」者「置匣」以「文」于『』也。
 
 「：汉语：通称网页请参照策（per-request referrer policy）。一次子资源读取临时改用的参照策：读取器接口只收地址，元素上的 referrerpolicy 便由调用处在发起读取前写进这里，读完还原；空串表示沿用文档的参考策。
 　　文言：网页请参照之策：一次子资之读暂用之参照策：读器之受惟址，元素之 referrerpolicy 则主者于发读之前书于此，读毕还之；空串则循文档之参考策。：」
@@ -1023,6 +1030,18 @@
 　　　文言：窗之 origin：依今页之址所序列之源（方案、主机与端口），惟读；址解不出则空。：」
 　令「源文」为（「网页源序列化」于「地址」）而
 　令「」为「急就定义属」于「全局物」于（（「急就文字自串」于『origin』）与（「急就字符串值」于（「急就文字自串」于「源文」））与「阳」与「阴」与「阳」）而
+　「：汉语：窗上的 crossOriginIsolated：本页的跨源隔离条件（开窗 same-origin 且嵌入 require-corp 或 credentialless）成立时给真，只读。两条头由载页时写进匣。
+　　　文言：窗之 crossOriginIsolated：本页跨源隔离之条（开窗 same-origin 且嵌入 require-corp 或 credentialless）成立则真，惟读。二首由载页之时书于匣。：」
+　令「隔首列」为
+　　（「列」【（『Cross-Origin-Opener-Policy』与（「读匣」于「网页窗开策」）），（『Cross-Origin-Embedder-Policy』与（「读匣」于「网页嵌入策」））】）而
+　令「」为
+　　（「急就定义属」
+　　　于「全局物」
+　　　于（（「急就文字自串」于『crossOriginIsolated』）与（「急就布尔」于（「网页跨源隔离」于「隔首列」））与「阴」与「阳」与「阴」））而
+　「：汉语：窗上的 originAgentCluster：本页源代理簇头为 `?1` 时给真，其余给假，只读。
+　　　文言：窗之 originAgentCluster：本页源头为 `?1` 则真，余则假，惟读。：」
+　令「」为
+　　（「急就定义属」于「全局物」于（（「急就文字自串」于『originAgentCluster』）与（「急就布尔」于（「网页源簇隔离」于「元」））与「阴」与「阳」与「阴」））而
 　「：汉语：给位置对象与历史对象接上 Object.prototype，location.hasOwnProperty 一类从原型继承的物法才查得到（脚本测试要用）。
 　　　文言：予位置、历史二物接 Object.prototype，location.hasOwnProperty 之属承于原型者乃可查（脚本试用之）。：」
 　令「对象父」为「急就取属」于（「急就取属」于「全局物」于（「急就文字自串」于『Object』））于（「急就文字自串」于『prototype』）而
