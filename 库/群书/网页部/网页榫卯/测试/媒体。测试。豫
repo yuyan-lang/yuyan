@@ -144,6 +144,16 @@
 「假声录匣」乃「匣」于（「列」于「文」）也。
 「假声录匣」者「置匣」以（「列」于「文」）于（「罄」以「文」）也。
 
+「：汉语：通称假尽匣。放声器的「尽」读数：测试改它，媒体态当即照办（用来验流声先到头时的结束）。
+　　文言：尽之匣：试者易之，媒体态当即照办。：」
+「假尽匣」乃「匣」于「爻」也。
+「假尽匣」者「置匣」以「爻」于「阴」也。
+
+「：汉语：通称假长匣。放声器的「长」读数：测试改它，媒体态当即补时长并派 durationchange。
+　　文言：长之匣：试者易之，媒体态当即补时长而派 durationchange。：」
+「假长匣」乃「匣」于「小数」也。
+「假长匣」者「置匣」以「小数」于「零点零」也。
+
 「：汉语：通称假记声（log one audio call）。把名目接进假声录匣。
 　　文言：假记声：以名目接于声录之匣。：」
 「假记声」乃化「名」曰「文」为「有」者也。
@@ -166,6 +176,8 @@
 　　　，「供」者（得「无」而「元」）也
 　　　，「钟」者（得「无」而（「读匣」以「小数」于「假声钟匣」））也
 　　　，「关」者（得「无」而「假记声」于「名」曰『关』）也
+　　　，「尽」者（得「无」而（「读匣」以「爻」于「假尽匣」））也
+　　　，「长」者（得「无」而（「读匣」以「小数」于「假长匣」））也
 　　　】
 　否则
 　　（「可无」以「媒体声器」）
@@ -198,7 +210,7 @@
 「入口」乃化「有」为「有」者也。
 「入口」者得「无」而
 　令「文档」为
-　　「析篇」于『<audio id="a" src="https://example.test/a.wav"></audio><video id="v"><source type="audio/x-unknown" src="https://example.test/bad.wav"><source type="audio/wav" src="https://example.test/a.wav"></video><audio id="bad" src="https://example.test/bad.wav"></audio>』而
+　　「析篇」于『<audio id="a" src="https://example.test/a.wav"></audio><video id="v"><source type="audio/x-unknown" src="https://example.test/bad.wav"><source type="audio/wav" src="https://example.test/a.wav"></video><audio id="bad" src="https://example.test/bad.wav"></audio><audio id="c" src="https://example.test/clock.ogg"></audio>』而
 　令「境」为「急就新全局境」于「元」而
 　令「绑定」为（「系网览篇」于「境」于「文档」）而
 　令「主录」为
@@ -272,7 +284,7 @@
 　令「」为
 　　「急就在境行脚本」
 　　　于「境」
-　　　于『window.__钟=document.createElement("audio");window.__钟.id="c";window.__钟.src="https://example.test/clock.ogg";document.body.appendChild(window.__钟);window.__钟.load();window.__钟.play();window.__钟初=window.__钟.paused;』而
+　　　于『window.__钟=document.createElement("audio");window.__钟.id="c";window.__钟.src="https://example.test/clock.ogg";document.body.appendChild(window.__钟);window.__钟.load();window.__钟.play();window.__钟初=window.__钟.paused;window.__钟.ondurationchange=function(){window.__钟长=1;};』而
 　「核对」于「名」曰『钟声元素播后不暂停』于「实」曰（「取串」于「境」于『String(window.__钟初)』）于「望」曰『false』而后
 　令「」为「写匣」于「假声钟匣」于「零点二」而
 　令「」为「媒体推进」于「现在」曰「九零零零」而
@@ -290,10 +302,25 @@
 　令「录」为（「读匣」以（「列」于「文」）于「假声录匣」）而
 　令「声录文」为（「叠」以「文」又以「文」于（得「项」又得「积」而（「接」于「积」于「项」））于『』于「录」）而
 　令「齐」为
-　　（（（（「文含」于「针」曰『播』于「全文」曰「声录文」）且（「文含」于「针」曰『量』于「全文」曰「声录文」））且（（「文含」于「针」曰『静』于「全文」曰「声录文」）且（「文含」于「针」曰『止』于「全文」曰「声录文」）））
+　　（（（（「文含」于「针」曰『播』于「全文」曰「声录文」）且（「文含」于「针」曰『量』于「全文」曰「声录文」））
+　　　且（（「文含」于「针」曰『静』于「全文」曰「声录文」）且（「文含」于「针」曰『止』于「全文」曰「声录文」））
+　　）
 　　　且（（「文含」于「针」曰『寻』于「全文」曰「声录文」）且（「文含」于「针」曰『止寻』于「全文」曰「声录文」））
 　　）而
 　「核对」于「名」曰『播止寻量静都传到放声器』于「实」曰（若「齐」则『是』否则（「声录文」））于「望」曰『是』而后
+　「：汉语：流声先到头：置尽为阳，时钟元素推进一次即结束，派发 ended。
+　　　文言：流声先到头：置尽为阳，钟声之节推进一次即终，派发 ended。：」
+　令「无」为「写匣」以「爻」于「假尽匣」于「阳」而
+　令「无」为「媒体推进」于「现在」曰「九九五零」而
+　「核对」于「名」曰『流声先到头时推进即结束』于「实」曰（「取串」于「境」于『[window.__钟.paused,window.__钟.ended].join("|")』）于「望」曰『true|true』而后
+　「：汉语：放声器报长之后媒体元素补时长并派 durationchange。
+　　　文言：放声器报长之后媒体之节补时长而派 durationchange。：」
+　令「无」为「写匣」以「小数」于「假长匣」于「零点五」而
+　令「无」为「媒体推进」于「现在」曰「九九六零」而
+　「核对」
+　　于「名」曰『放声器报长后补时长并派 durationchange』
+　　于「实」曰（「取串」于「境」于『[window.__钟.duration,window.__钟长].join("|")』）
+　　于「望」曰『0.5|1』而后
 　「书」于『媒体元素测试通过』
 也。
 
