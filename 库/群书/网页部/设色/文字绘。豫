@@ -609,7 +609,9 @@
 　　　　或（（「文同」于（「节名」于（「资」中「节点」））于『select』）且（「节有属」于（「资」中「节点」）于『size』））则
 　　　　　「样式入属」于（「资」中「样式」）于「性空白」于『pre』
 　　　否则若「文同」于（「节名」于（「资」中「节点」））于『textarea』则
-　　　　「样式入属」于（「资」中「样式」）于「性空白」于『pre-wrap』
+　　　　「：汉语：textarea 照计算样式里的 white-space 排，不再一律压成 pre-wrap：用户代理样式已给 textarea 写 pre-wrap，作者另外写 nowrap、pre 等应当生效（2026-10-30）。
+　　　　　　文言：textarea 依计算样式之 white-space 而排，不复概压为 pre-wrap：用户代理之式已为 textarea 书 pre-wrap，作者别书 nowrap、pre 之属当行（二零二六年十月三十日）。：」
+　　　　（「资」中「样式」）
 　　　否则
 　　　　「网页随行测量样式」于（「资」中「样式」）而
 　　「：汉语：控件的段落方向定级：unicode-bidi 为 plaintext 且带内部键 `--豫段自`（dir=auto）时按控件显示文字的首强字符（P2、P3）定，左起零、右起一；其余（含作者手写的 unicode-bidi:plaintext，其缺口待修）按自身 direction 定。随样式一起交给排版，整行 start／end 也据这个键解析；普通行内内容没有这个键。
