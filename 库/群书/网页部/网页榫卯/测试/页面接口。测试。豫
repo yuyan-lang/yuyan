@@ -1,5 +1,5 @@
-「：汉语：通称页面接口测试（page API test）。用假交换建立页面环境，装页面接口后跑页面脚本，逐个核对 fetch（then 与 await）、Headers、URL、URLSearchParams、FormData、Blob 的 text()、localStorage 与 sessionStorage、TextEncoder 与 TextDecoder、XMLHttpRequest 的事件顺序与各种 responseType；再核对本地簿确实记下了键值。
-　　文言：页面诸器之试：设假邮传，装诸器于境，行脚本而逐项验之：采书之诺与待、提封、驿址与询参、表单之录、卷帛之文、籍册之守、文帛之编、驿书之事序与诸响应之种；终验本地之簿实记其键值。
+「：汉语：通称页面接口测试（page API test）。用假交换建立页面环境，装页面接口后跑页面脚本，逐个核对 fetch（then 与 await）、Headers、URL、URLSearchParams、FormData、Blob 的 text()、localStorage 与 sessionStorage、TextEncoder 与 TextDecoder、XMLHttpRequest 的事件顺序与各种 responseType、AbortSignal.any 随任一信号中止并沿用理由、缓存册的 open/put/match/delete；再核对本地簿确实记下了键值。
+　　文言：页面诸器之试：设假邮传，装诸器于境，行脚本而逐项验之：采书之诺与待、提封、驿址与询参、表单之录、卷帛之文、籍册之守、文帛之编、驿书之事序与诸响应之种、合信之随任一而止承其理由、缓存册之开存取削；终验本地之簿实记其键值。
 　　赋曰：假邮一术充真驿，诸器装成试一场。采书诺待两相验，提封驿址各呈详。表单卷帛籍册守，文帛编码字成行。驿书事序逐条对，响应诸种尽昭彰。：」
 寻观「豫章」之书。
 寻观「豫章」之「形制」之「帛书」之书。
@@ -189,6 +189,33 @@
 　「核对」于「名」曰『responseType 为 blob 时的 text』于「实」曰（「取字」于「境」于『window.__己』）于「望」曰『甲文|6|text/plain』
 也。
 
+「：汉语：AbortSignal.any：一路中止即合信号中止，理由沿用该路，中止事件照常派发。
+　　文言：合信：一路止则合信止，理由承之，中止之事如常。：」
+「试中止」乃化「急就境」为「有」者也。
+「试中止」者得「境」而
+　令「」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『var a=new AbortController();var b=new AbortController();var c=AbortSignal.any([a.signal,b.signal]);var log=[];c.addEventListener("abort",function(){log.push("event");});var before=c.aborted;b.abort("乙故");window.__止=[String(before),String(c.aborted),String(c.reason===b.signal.reason),c.reason,String(log.length)].join("|");』而
+　「核对」于「名」曰『AbortSignal.any 随任一信号中止并沿用理由』于「实」曰（「取字」于「境」于『window.__止』）于「望」曰『false|true|true|乙故|1』
+也。
+
+「：汉语：缓存册：open、put、match、delete 各走一遍。
+　　文言：缓存之册：开、存、取、削各一遍。：」
+「试缓存册」乃化「急就境」为「有」者也。
+「试缓存册」者得「境」而
+　令「」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『var n;caches.open("试").then(function(c){return c.put("/a",new Response("甲文")).then(function(){return c.match("/a");});}).then(function(r){return r.text();}).then(function(t){return caches.open("试").then(function(c2){return c2.delete("/a");}).then(function(d){window.__缓=[t,String(d)].join("|");});});』而
+　令「」为「网页微役察点」于「元」而
+　令「」为「网页微役察点」于「元」而
+　令「」为「网页微役察点」于「元」而
+　令「」为「网页微役察点」于「元」而
+　令「」为「网页微役察点」于「元」而
+　「核对」于「名」曰『缓存册存取得回并删去』于「实」曰（「取字」于「境」于『window.__缓』）于「望」曰『甲文|true』
+也。
+
 「入口」乃化「有」为「有」者也。
 「入口」者得「无」而
 　令「摊」为「新试境」于「元」而
@@ -197,6 +224,8 @@
 　令「」为「试采书」于「境」而
 　令「」为「试帛籍」于「境」于「本地簿」而
 　令「」为「试驿书」于「境」而
+　令「」为「试中止」于「境」而
+　令「」为「试缓存册」于「境」而
 　「书」于『页面接口测试通过』
 也。
 
