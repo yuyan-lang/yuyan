@@ -13,6 +13,8 @@
 寻观「白描」之「高氏滤镜」之书。
 寻观「白描」之「分量转滤镜」之书。
 寻观「白描」之「湍流滤镜」之书。
+寻观「白描」之「卷积滤镜」之书。
+寻观「白描」之「投影滤镜」之书。
 寻观「白描」之「颜色」之书。
 寻「画谱」之书。
 寻「装潢」之书。
@@ -42,6 +44,8 @@
 　，『feMorphology』
 　，『feComponentTransfer』
 　，『feTurbulence』
+　，『feConvolveMatrix』
+　，『feDropShadow』
 　，『feDiffuseLighting』
 　，『feSpecularLighting』
 　】
@@ -544,6 +548,10 @@
 　　「滤镜分量转」于「入」曰「入」于「子」曰「子」
 　否则若「文同」于「名」于『feTurbulence』则
 　　「滤镜湍流」于「入」曰「入」于「属性」曰「属性」
+　否则若「文同」于「名」于『feConvolveMatrix』则
+　　「滤镜卷积」于「入」曰「入」于「属性」曰「属性」
+　否则若「文同」于「名」于『feDropShadow』则
+　　「滤镜投影」于「入」曰「入」于「属性」曰「属性」于「域」曰「域」
 　否则若「文同」于「名」于『feMorphology』则
 　　「滤镜形态」
 　　　于「入」曰「入」
