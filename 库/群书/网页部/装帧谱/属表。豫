@@ -249,6 +249,8 @@
 　，『border-spacing』与『0』与「阳」
 　，『caption-side』与『top』与「阳」
 　，『vertical-align』与『baseline』与「阴」
+　，『text-box-trim』与『none』与「阳」
+　，『text-box-edge』与『auto』与「阳」
 　】
 也。
 
