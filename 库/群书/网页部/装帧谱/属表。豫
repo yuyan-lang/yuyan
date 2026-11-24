@@ -290,6 +290,9 @@
 　，『outline』与（「列」【『outline-width』，『outline-style』，『outline-color』】）
 　，『text-decoration』与（「列」【『text-decoration-line』，『text-decoration-style』，『text-decoration-color』，『text-decoration-thickness』】）
 　，『gap』与（「列」【『row-gap』，『column-gap』】）
+　，『grid-gap』与（「列」【『row-gap』，『column-gap』】）
+　，『grid-row-gap』与（「列」【『row-gap』】）
+　，『grid-column-gap』与（「列」【『column-gap』】）
 　，『columns』与（「列」【『column-width』，『column-count』】）
 　，『text-wrap』与（「列」【『text-wrap-mode』，『text-wrap-style』】）
 　，『contain-intrinsic-size』与（「列」【『contain-intrinsic-width』，『contain-intrinsic-height』】）
