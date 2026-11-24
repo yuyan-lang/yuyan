@@ -657,6 +657,281 @@
 　（「计」以（化「篇节」又化「计算样式」为「计算样式」）于（「读匣」以（「列」于（化「篇节」又化「计算样式」为「计算样式」））于「样式后处理们」））
 也。
 
+「：汉语：通称折描边简写（fold -webkit-text-stroke shorthand）。老站写 -webkit-text-stroke: 2px red 或 red 2px：把组件分成“长度”（作 -webkit-text-stroke-width）与“其余”（作 -webkit-text-stroke-color），两个长属性为空时分别填上。只写了宽或只写了色时只填缺的那一项；颜色分量先过「试色」，解不出颜色就不填（留给绘制端按文字色算）。
+　　文言：折描边简写：老站书 -webkit-text-stroke: 2px red 或 red 2px：分其件为“长”（作 -webkit-text-stroke-width）与“余”（作 -webkit-text-stroke-color），二长性空时各填之。惟书宽或惟书色则惟填其阙。：」
+「折描边简写」乃化「计算样式」为「计算样式」者也。
+「折描边简写」者得「样」而
+　令「简」为（「样式取值」于「样」于『-webkit-text-stroke』）而
+　若（「文同」于「简」于『』）则
+　　「样」
+　否则（
+　　令「件」为（「择」以「样式组件」于（得「件」而非（「组件为空白」于「件」））于（「析样式组件」于「简」））而
+　　令「宽文」为（「置匣」以「文」于『』）而
+　　令「色文」为（「置匣」以「文」于『』）而
+　　令「无」为
+　　　（「遍」以「样式组件」又以「有」
+　　　　于「件」
+　　　　于（得「件」而
+　　　　　令「文」为（「样式组件述」于「件」）而
+　　　　　若（「文同」于（「读匣」于「宽文」）于『』）
+　　　　　　且（
+　　　　　　　鉴（「析样式长度」于（「数值常境」于「元」）于「文」）而
+　　　　　　　　或有（「可有」于「尺」）则「阳」
+　　　　　　　　或有「可无」则「阴」
+　　　　　　）则
+　　　　　　　（「写匣」于「宽文」于「文」）
+　　　　　否则
+　　　　　　（「写匣」于「色文」于「文」）
+　　　　））而
+　　令「样」为
+　　　若（（「文同」于（「样式取值」于「样」于『-webkit-text-stroke-width』）于『』）且（非（「文同」于（「读匣」于「宽文」）于『』）））则
+　　　　（「样式入」于「样」于『-webkit-text-stroke-width』于（「读匣」于「宽文」））
+　　　否则
+　　　　「样」而
+　　若（（「文同」于（「样式取值」于「样」于『-webkit-text-stroke-color』）于『』）
+　　　且（（非（「文同」于（「读匣」于「色文」）于『』））且（「试色」于（「数值常境」于「元」）于（「读匣」于「色文」）））
+　　）则
+　　　（「样式入」于「样」于『-webkit-text-stroke-color』于（「读匣」于「色文」））
+　　否则
+　　　「样」
+　）
+也。
+
+「：汉语：通称折前缀别名（fold vendor-prefixed aliases）。老站常写 -webkit- 前缀的同一个属性：逐对看，标准属性为空而带前缀的有值时就把它抄过去。管的一批：transform、transform-origin、transition、animation、box-shadow、border-radius、border-image、background-clip、background-size、box-sizing、flex、flex-direction、flex-wrap、align-items、justify-content、align-self、order、filter、column-count、column-gap、column-width、text-size-adjust、appearance、user-select，以及 mask 一族、backdrop-filter、clip-path、hyphens 的 -webkit- 写法；-moz-、-ms-、-o- 也收常见的一批（阴影、圆角、变换、过渡、动画、用户选择、外观、背景裁、盒制、弹性、断词）。
+　　文言：折前缀别名：老站常书 -webkit- 前缀之同性：逐对而视，常性空而带前缀者有值则以之抄往。所司一批：transform、transform-origin、transition、animation、box-shadow、border-radius、border-image、background-clip、background-size、box-sizing、flex、flex-direction、flex-wrap、align-items、justify-content、align-self、order、filter、column-count、column-gap、column-width、text-size-adjust、appearance、user-select，以及 mask 一族、backdrop-filter、clip-path、hyphens 的 -webkit- 写法；-moz-、-ms-、-o- 也收常见的一批（阴影、圆角、变换、过渡、动画、用户选择、外观、背景裁、盒制、弹性、断词）。：」
+「前缀对表」乃（「列」于（「文」合「文」））也。
+「前缀对表」者
+　「列」
+　【『-webkit-transform』与『transform』
+　，『-webkit-transform-origin』与『transform-origin』
+　，『-webkit-transition』与『transition』
+　，『-webkit-animation』与『animation』
+　，『-webkit-box-shadow』与『box-shadow』
+　，『-webkit-border-radius』与『border-radius』
+　，『-webkit-border-image』与『border-image』
+　，『-webkit-background-clip』与『background-clip』
+　，『-webkit-background-size』与『background-size』
+　，『-webkit-box-sizing』与『box-sizing』
+　，『-webkit-flex』与『flex』
+　，『-webkit-flex-direction』与『flex-direction』
+　，『-webkit-flex-wrap』与『flex-wrap』
+　，『-webkit-align-items』与『align-items』
+　，『-webkit-justify-content』与『justify-content』
+　，『-webkit-align-self』与『align-self』
+　，『-webkit-order』与『order』
+　，『-webkit-filter』与『filter』
+　，『-webkit-column-count』与『column-count』
+　，『-webkit-column-gap』与『column-gap』
+　，『-webkit-column-width』与『column-width』
+　，『-webkit-text-size-adjust』与『text-size-adjust』
+　，『-webkit-appearance』与『appearance』
+　，『-webkit-user-select』与『user-select』
+　，『-webkit-mask』与『mask』
+　，『-webkit-mask-image』与『mask-image』
+　，『-webkit-mask-mode』与『mask-mode』
+　，『-webkit-mask-repeat』与『mask-repeat』
+　，『-webkit-mask-position』与『mask-position』
+　，『-webkit-mask-clip』与『mask-clip』
+　，『-webkit-mask-origin』与『mask-origin』
+　，『-webkit-mask-size』与『mask-size』
+　，『-webkit-mask-composite』与『mask-composite』
+　，『-webkit-mask-type』与『mask-type』
+　，『-webkit-backdrop-filter』与『backdrop-filter』
+　，『-webkit-clip-path』与『clip-path』
+　，『-webkit-hyphens』与『hyphens』
+　，『-moz-box-shadow』与『box-shadow』
+　，『-moz-border-radius』与『border-radius』
+　，『-moz-transform』与『transform』
+　，『-moz-transform-origin』与『transform-origin』
+　，『-moz-transition』与『transition』
+　，『-moz-animation』与『animation』
+　，『-moz-user-select』与『user-select』
+　，『-moz-appearance』与『appearance』
+　，『-moz-background-clip』与『background-clip』
+　，『-moz-box-sizing』与『box-sizing』
+　，『-moz-hyphens』与『hyphens』
+　，『-ms-transform』与『transform』
+　，『-ms-user-select』与『user-select』
+　，『-ms-hyphens』与『hyphens』
+　，『-ms-flex』与『flex』
+　，『-ms-flex-direction』与『flex-direction』
+　，『-ms-flex-wrap』与『flex-wrap』
+　，『-ms-align-items』与『align-items』
+　，『-ms-justify-content』与『justify-content』
+　，『-ms-order』与『order』
+　，『-o-transform』与『transform』
+　，『-o-transition』与『transition』
+　】
+也。
+
+「折前缀别名」乃化「计算样式」为「计算样式」者也。
+「折前缀别名」者得「样」而
+　「叠」以（「文」合「文」）又以「计算样式」
+　　于（得「对」又得「积」而
+　　　令「旧名」为（「对」中「零」）而
+　　　令「新名」为（「对」中「一」）而
+　　　若（（「文同」于（「样式取值」于「积」于「新名」）于『』）且（非（「文同」于（「样式取值」于「积」于「旧名」）于『』）））则
+　　　　（「样式入」于「积」于「新名」于（「样式取值」于「积」于「旧名」））
+　　　否则
+　　　　「积」
+　　）
+　　于「样」
+　　于「前缀对表」
+也。
+
+「：汉语：通称折隙别名（fold legacy gap aliases）。grid-gap 一族折到 row-gap 与 column-gap：作者没写 row-gap／column-gap 时，用 grid-row-gap／grid-column-gap 填；grid-gap 是两者的简写，只在对应长写为空时同时填两轴（值按空白分成一到两段，一段则两轴同值）。
+　　文言：折隙别名：grid-gap 之族折就 row-gap 与 column-gap：作者未书 row-gap／column-gap 者，以 grid-row-gap／grid-column-gap 填；grid-gap 为二者之简，惟对应长写为空时同填二轴（值依空白分为一二段，一段则二轴同）。：」
+「折隙别名」乃化「计算样式」为「计算样式」者也。
+「折隙别名」者得「样」而
+　令「总隙」为（「样式取值」于「样」于『grid-gap』）而
+　令「分段」为（「择」以「样式组件」于（得「件」而非（「组件为空白」于「件」））于（「析样式组件」于「总隙」））而
+　令「首段」为若（「计」以「样式组件」于「分段」）大于「零」则（「条件串」于（「列」【「冠」以「样式组件」于「分段」】））否则『』而
+　令「次段」为若（「计」以「样式组件」于「分段」）大于「一」则（「条件串」于（「列」【「冠」以「样式组件」于（「倒」于「分段」）】））否则「首段」而
+　令「纵旧」为（若（「文同」于「次段」于『』）则「首段」否则「次段」）而
+　令「样」为
+　　若（（「文同」于（「样式取值」于「样」于『row-gap』）于『』）且（非（「文同」于（「样式取值」于「样」于『grid-row-gap』）于『』）））则
+　　　（「样式入」于「样」于『row-gap』于（「样式取值」于「样」于『grid-row-gap』））
+　　否则若（（（「文同」于（「样式取值」于「样」于『row-gap』）于『』））且（非（「文同」于「首段」于『』）））则
+　　　（「样式入」于「样」于『row-gap』于「首段」）
+　　否则
+　　　「样」而
+　令「样」为
+　　若（（「文同」于（「样式取值」于「样」于『column-gap』）于『』）且（非（「文同」于（「样式取值」于「样」于『grid-column-gap』）于『』）））则
+　　　（「样式入」于「样」于『column-gap』于（「样式取值」于「样」于『grid-column-gap』））
+　　否则若（（（「文同」于（「样式取值」于「样」于『column-gap』）于『』））且（非（「文同」于「纵旧」于『』）））则
+　　　（「样式入」于「样」于『column-gap』于「纵旧」）
+　　否则
+　　　「样」而
+　「样」
+也。
+
+「：汉语：通称折旧弹性（fold legacy -webkit-box properties）。老站用 display:-webkit-box 配 -webkit-box-orient／-webkit-box-direction 排竖排或反向：作者没写 flex-direction 时，用这两个旧属性折出 flex-direction（vertical 加 reverse 为 column-reverse，horizontal 加 reverse 为 row-reverse，其余为 column、row）。算样式里 -webkit-box 已归成 flex，这条把方向也一并折好。
+　　文言：折旧弹性：老站以 display:-webkit-box 配 -webkit-box-orient／-webkit-box-direction 排竖或反：作者未书 flex-direction 者，以此二旧性折出 flex-direction（vertical 加 reverse 为 column-reverse，horizontal 加 reverse 为 row-reverse，余为 column、row）。算样之中 -webkit-box 已归为 flex，此并折其向。：」
+「折旧弹性」乃化「计算样式」为「计算样式」者也。
+「折旧弹性」者得「样」而
+　令「向文」为（「样式小写」于（「样式取值」于「样」于『-webkit-box-orient』））而
+　令「反文」为（「样式小写」于（「样式取值」于「样」于『-webkit-box-direction』））而
+　令「样」为
+　　若（（「文同」于（「样式取值」于「样」于『flex-direction』）于『』）
+　　　且（（（「文同」于「向文」于『vertical』）或（（「文同」于「向文」于『horizontal』）或（非（「文同」于「反文」于『』）））））
+　　）则（
+　　　令「竖」为（「文同」于「向文」于『vertical』）而
+　　　令「反」为（「文同」于「反文」于『reverse』）而
+　　　「样式入」于「样」于『flex-direction』于（若「竖」则（若「反」则『column-reverse』否则『column』）否则（若「反」则『row-reverse』否则『row』））
+　　）否则
+　　　「样」而
+　「样」
+也。
+
+「：汉语：通称折旧弹性余（fold remaining legacy flexbox properties）。把 -webkit-box-flex 折成 flex-grow（作者没写 flex 简写与 flex-grow 时）、-webkit-box-pack 折成 justify-content（start→flex-start、end→flex-end、justify→space-between、center 照旧）、-webkit-box-align 折成 align-items（start→flex-start、end→flex-end，其余照旧）、-webkit-box-ordinal-group 折成 order（旧值减一，夹到不小于零）、-webkit-box-lines 折成 flex-wrap（multiple 为 wrap，其余 nowrap）。
+　　文言：折旧弹性余：以 -webkit-box-flex 折为 flex-grow（作者未书 flex 简与 flex-grow 者）、-webkit-box-pack 折为 justify-content（start→flex-start、end→flex-end、justify→space-between、center 如故）、-webkit-box-align 折为 align-items（start→flex-start、end→flex-end，余如故）。：」
+「折旧弹性余」乃化「计算样式」为「计算样式」者也。
+「折旧弹性余」者得「样」而
+　令「长文」为（「样式取值」于「样」于『-webkit-box-flex』）而
+　令「样」为
+　　若（（非（「文同」于「长文」于『』））
+　　　且（（「文同」于（「样式取值」于「样」于『flex-grow』）于『』）且（「文同」于（「样式取值」于「样」于『flex』）于『』））
+　　）则
+　　　（「样式入」于「样」于『flex-grow』于「长文」）
+　　否则
+　　　「样」而
+　令「包文」为（「样式小写」于（「样式取值」于「样」于『-webkit-box-pack』））而
+　令「样」为
+　　若（（非（「文同」于「包文」于『』））且（「文同」于（「样式取值」于「样」于『justify-content』）于『』））则
+　　　（「样式入」
+　　　　于「样」
+　　　　于『justify-content』
+　　　　于（
+　　　　　若「文同」于「包文」于『justify』则
+　　　　　　『space-between』
+　　　　　否则
+　　　　　　（若「文同」于「包文」于『start』则『flex-start』否则（若「文同」于「包文」于『end』则『flex-end』否则「包文」））
+　　　　））
+　　否则
+　　　「样」而
+　令「齐文」为（「样式小写」于（「样式取值」于「样」于『-webkit-box-align』））而
+　令「样」为
+　　若（（非（「文同」于「齐文」于『』））且（「文同」于（「样式取值」于「样」于『align-items』）于『』））则
+　　　（「样式入」
+　　　　于「样」
+　　　　于『align-items』
+　　　　于（若「文同」于「齐文」于『start』则『flex-start』否则（若「文同」于「齐文」于『end』则『flex-end』否则「齐文」）））
+　　否则
+　　　「样」而
+　令「序文」为（「样式取值」于「样」于『-webkit-box-ordinal-group』）而
+　令「样」为
+　　若（（非（「文同」于「序文」于『』））且（「文同」于（「样式取值」于「样」于『order』）于『』））则
+　　　（「样式入」于「样」于『order』于（「述数」于（「大者」于「零」于（（「识数」于「序文」）减「一」））））
+　　否则
+　　　「样」而
+　令「行文」为（「样式小写」于（「样式取值」于「样」于『-webkit-box-lines』））而
+　若（（非（「文同」于「行文」于『』））且（「文同」于（「样式取值」于「样」于『flex-wrap』）于『』））则
+　　（「样式入」于「样」于『flex-wrap』于（若「文同」于「行文」于『multiple』则『wrap』否则『nowrap』））
+　否则
+　　「样」
+也。
+
+「：汉语：通称折旧别名（fold legacy property aliases）。把老站还在用的别名折到标准属性上：word-wrap 与 overflow-wrap 同义，作者没写 overflow-wrap 时用 word-wrap 的值填上。其余别名（grid-gap 一族、-webkit-line-clamp）还没接，留待后续。
+　　文言：折旧别名：以老站犹用之别名折就常性：word-wrap 与 overflow-wrap 同义，作者未书 overflow-wrap 则以 word-wrap 之值填之。余别名（grid-gap 之族、-webkit-line-clamp）尚未接，俟后。：」
+「折旧别名」乃化「计算样式」为「计算样式」者也。
+「折旧别名」者得「样」而
+　令「正」为（「样式取值」于「样」于『overflow-wrap』）而
+　令「旧」为（「样式取值」于「样」于『word-wrap』）而
+　令「样」为若（（「文同」于「正」于『』）且（非（「文同」于「旧」于『』）））则（「样式入」于「样」于『overflow-wrap』于「旧」）否则「样」而
+　令「样」为（「折隙别名」于「样」）而
+　令「样」为（「折旧弹性」于「样」）而
+　令「样」为（「折旧弹性余」于「样」）而
+　令「样」为（「折描边简写」于「样」）而
+　「折前缀别名」于「样」
+也。
+
+「：汉语：通称折空白长属性（fold white-space longhands into white-space）。white-space 在 CSS Text 里是 white-space-collapse 与 text-wrap-mode 两条长属性的简写，本引擎后面一律按 white-space 的取值判空白与断行：这里先按简写取两条轴，再用写了的长属性覆盖对应的轴，最后折回与这对轴等价的 white-space 取值。两条长属性都没写时原样返回。等价表：collapse+wrap=normal、collapse+nowrap=nowrap、preserve+wrap=pre-wrap、preserve+nowrap=pre、preserve-breaks+wrap=pre-line、break-spaces+wrap=break-spaces；没有简写等价的组合（preserve-breaks 配 nowrap、break-spaces 配 nowrap、preserve-spaces 配任一种）退回最接近的简写值（pre-line、break-spaces、pre-wrap），并在注释里记明这一层近似。
+　　文言：折空白长属性：white-space 于 CSS Text 为 white-space-collapse 与 text-wrap-mode 二长性之简，本引擎后皆依 white-space 之值判空白与断行：此先依简取其轴，次以所书之长性覆其轴，终折还为与二轴相当之 white-space 值。二长性皆未书则原样而还。相当之表：collapse 与 wrap 为 normal、collapse 与 nowrap 为 nowrap、preserve 与 wrap 为 pre-wrap、preserve 与 nowrap 为 pre、preserve-breaks 与 wrap 为 pre-line、break-spaces 与 wrap 为 break-spaces；无简可当之合（preserve-breaks 配 nowrap、break-spaces 配 nowrap、preserve-spaces 配任一），退就最近之简（pre-line、break-spaces、pre-wrap），注中明此近似。：」
+「折空白长属性」乃化「计算样式」为「计算样式」者也。
+「折空白长属性」者得「样」而
+　令「白文」为（「样式小写」于（「样式取值」于「样」于『white-space』））而
+　令「折轴」为
+　　（
+　　　若（「文同」于「白文」于『pre』）
+　　　　或（（「文同」于「白文」于『pre-wrap』）
+　　　　　或（（「文同」于「白文」于『pre-line』）或（（「文同」于「白文」于『break-spaces』）或（「文同」于「白文」于『preserve-spaces』）））
+　　　　）则（
+　　　　　若「文同」于「白文」于『pre-line』则
+　　　　　　『preserve-breaks』
+　　　　　否则
+　　　　　　（若「文同」于「白文」于『break-spaces』则『break-spaces』否则（若「文同」于「白文」于『preserve-spaces』则『preserve-spaces』否则『preserve』））
+　　　　）
+　　　否则
+　　　　『collapse』
+　　）而
+　令「绕轴」为（若（（「文同」于「白文」于『nowrap』）或（「文同」于「白文」于『pre』））则『nowrap』否则『wrap』）而
+　令「折书」为（「样式小写」于（「样式取值」于「样」于『white-space-collapse』））而
+　令「绕书」为（「样式小写」于（「样式取值」于「样」于『text-wrap-mode』））而
+　令「折终」为（若「文同」于「折书」于『』则「折轴」否则「折书」）而
+　令「绕终」为（若「文同」于「绕书」于『』则「绕轴」否则「绕书」）而
+　若（（「文同」于「折书」于『』）且（「文同」于「绕书」于『』））则
+　　「样」
+　否则（
+　　令「新白」为
+　　　若（「文同」于「绕终」于『nowrap』）则（
+　　　　若（「文同」于「折终」于『preserve』）则
+　　　　　『pre』
+　　　　否则
+　　　　　（若（「文同」于「折终」于『preserve-breaks』）则『pre-line』否则（若（「文同」于「折终」于『break-spaces』）则『break-spaces』否则『nowrap』））
+　　　）否则（
+　　　　若（「文同」于「折终」于『preserve』）则
+　　　　　『pre-wrap』
+　　　　否则（
+　　　　　若（「文同」于「折终」于『preserve-breaks』）则
+　　　　　　『pre-line』
+　　　　　否则
+　　　　　　（若（「文同」于「折终」于『break-spaces』）则『break-spaces』否则（若（「文同」于「折终」于『preserve-spaces』）则『pre-wrap』否则『normal』））
+　　　　）
+　　　）而
+　　（「样式入」于「样」于『white-space』于「新白」）
+　）
+也。
+
 「带条件算节样式体」乃化「样式条件环境」又化「篇节」又化（「列」于「样式来源」）又化「爻」为「计算样式」者也。
 「带条件算节样式体」者得「环境」又得「节」又得「诸源」又得「含伪元素」而
 　令「空样」为（「样式空」于「元」）而
@@ -718,13 +993,15 @@
 　令「自身样」为「算样式变量」于（「折字号样」于「父样」于（「级联算」于（「滤候选」于「诸候」）于「父样」））于「父样」而
 　令「自身样」为（「样式后处」于「节」于「自身样」）而
 　令「自身样」为若「文同」于（「样式取值属」于「父样」于「性某」）于『』则（「样式入属」于「自身样」于「性某」于（「节计数式文」于「全诸源」））否则「自身样」而
+　令「自身样」为（「折空白长属性」于「自身样」）而
+　令「自身样」为（「折旧别名」于「自身样」）而
 　「叠」以「文」又以「计算样式」
 　　于（得「伪名」又得「积」而
 　　　令「其文」为「伪件声明文」于「伪候选们」于「伪名」而
 　　　若「文同」于「其文」于『』则「积」否则（「样式入」于「积」于（『::』接「伪名」）于「其文」）
 　　）
 　　于「自身样」
-　　于（「列」【『before』，『after』，『marker』，『picker-icon』，『picker』，『checkmark』】）
+　　于（「列」【『before』，『after』，『marker』，『picker-icon』，『picker』，『checkmark』，『selection』，『placeholder』】）
 也。
 
 「带条件算节样式」乃化「样式条件环境」又化「篇节」又化（「列」于「样式来源」）为「计算样式」者也。
