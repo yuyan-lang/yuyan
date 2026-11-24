@@ -101,6 +101,10 @@
 　，『text-emphasis-style』与『none』与「阳」
 　，『text-emphasis-color』与『currentcolor』与「阳」
 　，『text-emphasis-position』与『over right』与「阳」
+　，『text-underline-position』与『auto』与「阳」
+　，『-webkit-text-stroke-width』与『0』与「阳」
+　，『-webkit-text-stroke-color』与『currentcolor』与「阳」
+　，『-webkit-text-fill-color』与『currentcolor』与「阳」
 　，『ruby-position』与『over』与「阳」
 　，『ruby-align』与『space-around』与「阳」
 　，『ruby-merge』与『separate』与「阳」
