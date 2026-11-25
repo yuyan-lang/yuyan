@@ -81,9 +81,12 @@ export class 进程表 {
     return 取编模(this.模块缓存, 内容, () => WebAssembly.compile(内容));
   }
 
+  // 文言：取工：悬栈之制按需而开，诸工皆有役且未满池数乃新开一工，否则付役最少者；旧制取闲工，无则开之（议一千四百三十九）。
+  // 汉语：取一个工作线程。JSPI 模式按需开：已开的线程都有活任务、且还没到池数时才新开一个，否则派给活任务最少的那个；
+  //   旧模式取空闲的，没有就新开。原先第一次派任务就把池数（核数）个线程全开出来，一两个任务时其余全空着（议题 1439）。
   取线程() {
-    if (this.异步) while (this.线程们.length < this.池数) this.造线程();
-    let 线 = this.异步 ? this.线程们.reduce((甲, 乙) => 甲.任务们.size <= 乙.任务们.size ? 甲 : 乙) : this.线程们.find(项 => !项.忙);
+    let 线 = this.异步 ? this.线程们.reduce((甲, 乙) => 甲 && 甲.任务们.size <= 乙.任务们.size ? 甲 : 乙, null) : this.线程们.find(项 => !项.忙);
+    if (this.异步 && 线 && 线.任务们.size > 0 && this.线程们.length < this.池数) 线 = null;
     线 ??= this.造线程();
     clearTimeout(线.闲时);
     线.忙 = true;
