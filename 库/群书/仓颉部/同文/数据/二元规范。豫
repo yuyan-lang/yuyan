@@ -5,7 +5,7 @@
 
 「二元规范表零」乃化「数」为「文」者也。
 「二元规范表零」者得「桶」而
-　若「且」于（非（「桶」小于「零」））于（「桶」小于「一」）则
+　若「俱且」于（非（「桶」小于「零」））于（「桶」小于「一」）则
 　　『0041..005A;Changes_When_NFKC_Casefolded
 00A0;Changes_When_NFKC_Casefolded
 00A8;Changes_When_NFKC_Casefolded
@@ -22,7 +22,7 @@
 00C0..00D6;Changes_When_NFKC_Casefolded
 00D8..00DF;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「一」））于（「桶」小于「二」）则
+　否则若「俱且」于（非（「桶」小于「一」））于（「桶」小于「二」）则
 　　『0100;Changes_When_NFKC_Casefolded
 0102;Changes_When_NFKC_Casefolded
 0104;Changes_When_NFKC_Casefolded
@@ -126,7 +126,7 @@
 01FC;Changes_When_NFKC_Casefolded
 01FE;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「二」））于（「桶」小于「三」）则
+　否则若「俱且」于（非（「桶」小于「二」））于（「桶」小于「三」）则
 　　『0200;Changes_When_NFKC_Casefolded
 0202;Changes_When_NFKC_Casefolded
 0204;Changes_When_NFKC_Casefolded
@@ -165,7 +165,7 @@
 02D8..02DD;Changes_When_NFKC_Casefolded
 02E0..02E4;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「三」））于（「桶」小于「四」）则
+　否则若「俱且」于（非（「桶」小于「三」））于（「桶」小于「四」）则
 　　『0340..0341;Changes_When_NFKC_Casefolded
 0343..0345;Changes_When_NFKC_Casefolded
 034F;Changes_When_NFKC_Casefolded
@@ -204,7 +204,7 @@
 03F9..03FA;Changes_When_NFKC_Casefolded
 03FD..042F;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「四」））于（「桶」小于「五」）则
+　否则若「俱且」于（非（「桶」小于「四」））于（「桶」小于「五」）则
 　　『03FD..042F;Changes_When_NFKC_Casefolded
 0460;Changes_When_NFKC_Casefolded
 0462;Changes_When_NFKC_Casefolded
@@ -282,7 +282,7 @@
 04FC;Changes_When_NFKC_Casefolded
 04FE;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「五」））于（「桶」小于「六」）则
+　否则若「俱且」于（非（「桶」小于「五」））于（「桶」小于「六」）则
 　　『0500;Changes_When_NFKC_Casefolded
 0502;Changes_When_NFKC_Casefolded
 0504;Changes_When_NFKC_Casefolded
@@ -312,21 +312,21 @@
 0587;Changes_When_NFKC_Casefolded
 058B..058C;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「六」））于（「桶」小于「七」）则
+　否则若「俱且」于（非（「桶」小于「六」））于（「桶」小于「七」）则
 　　『061C;Changes_When_NFKC_Casefolded「：换行：」0675..0678;Changes_When_NFKC_Casefolded「：换行：」』
-　否则若「且」于（非（「桶」小于「九」））于（「桶」小于「一零」）则
+　否则若「俱且」于（非（「桶」小于「九」））于（「桶」小于「一零」）则
 　　『0958..095F;Changes_When_NFKC_Casefolded「：换行：」09DC..09DD;Changes_When_NFKC_Casefolded「：换行：」09DF;Changes_When_NFKC_Casefolded「：换行：」』
-　否则若「且」于（非（「桶」小于「一零」））于（「桶」小于「一一」）则
+　否则若「俱且」于（非（「桶」小于「一零」））于（「桶」小于「一一」）则
 　　『0A33;Changes_When_NFKC_Casefolded
 0A36;Changes_When_NFKC_Casefolded
 0A59..0A5B;Changes_When_NFKC_Casefolded
 0A5E;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「一一」））于（「桶」小于「一二」）则
+　否则若「俱且」于（非（「桶」小于「一一」））于（「桶」小于「一二」）则
 　　『0B5C..0B5D;Changes_When_NFKC_Casefolded「：换行：」』
-　否则若「且」于（非（「桶」小于「一四」））于（「桶」小于「一五」）则
+　否则若「俱且」于（非（「桶」小于「一四」））于（「桶」小于「一五」）则
 　　『0E33;Changes_When_NFKC_Casefolded「：换行：」0EB3;Changes_When_NFKC_Casefolded「：换行：」0EDC..0EDD;Changes_When_NFKC_Casefolded「：换行：」』
-　否则若「且」于（非（「桶」小于「一五」））于（「桶」小于「一六」）则
+　否则若「俱且」于（非（「桶」小于「一五」））于（「桶」小于「一六」）则
 　　『0F0C;Changes_When_NFKC_Casefolded
 0F43;Changes_When_NFKC_Casefolded
 0F4D;Changes_When_NFKC_Casefolded
@@ -344,26 +344,26 @@
 0FAC;Changes_When_NFKC_Casefolded
 0FB9;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「一六」））于（「桶」小于「一七」）则
+　否则若「俱且」于（非（「桶」小于「一六」））于（「桶」小于「一七」）则
 　　『10A0..10C5;Changes_When_NFKC_Casefolded
 10C7;Changes_When_NFKC_Casefolded
 10CD;Changes_When_NFKC_Casefolded
 10FC;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「一七」））于（「桶」小于「一八」）则
+　否则若「俱且」于（非（「桶」小于「一七」））于（「桶」小于「一八」）则
 　　『115F..1160;Changes_When_NFKC_Casefolded「：换行：」』
-　否则若「且」于（非（「桶」小于「一九」））于（「桶」小于「二零」）则
+　否则若「俱且」于（非（「桶」小于「一九」））于（「桶」小于「二零」）则
 　　『13F8..13FD;Changes_When_NFKC_Casefolded「：换行：」』
-　否则若「且」于（非（「桶」小于「二三」））于（「桶」小于「二四」）则
+　否则若「俱且」于（非（「桶」小于「二三」））于（「桶」小于「二四」）则
 　　『17B4..17B5;Changes_When_NFKC_Casefolded「：换行：」』
-　否则若「且」于（非（「桶」小于「二四」））于（「桶」小于「二五」）则
+　否则若「俱且」于（非（「桶」小于「二四」））于（「桶」小于「二五」）则
 　　『180B..180D;Changes_When_NFKC_Casefolded「：换行：」180E;Changes_When_NFKC_Casefolded「：换行：」180F;Changes_When_NFKC_Casefolded「：换行：」』
-　否则若「且」于（非（「桶」小于「二八」））于（「桶」小于「二九」）则
+　否则若「俱且」于（非（「桶」小于「二八」））于（「桶」小于「二九」）则
 　　『1C80..1C89;Changes_When_NFKC_Casefolded
 1C90..1CBA;Changes_When_NFKC_Casefolded
 1CBD..1CBF;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「二九」））于（「桶」小于「三零」）则
+　否则若「俱且」于（非（「桶」小于「二九」））于（「桶」小于「三零」）则
 　　『1D2C..1D2E;Changes_When_NFKC_Casefolded
 1D30..1D3A;Changes_When_NFKC_Casefolded
 1D3C..1D4D;Changes_When_NFKC_Casefolded
@@ -371,7 +371,7 @@
 1D78;Changes_When_NFKC_Casefolded
 1D9B..1DBF;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「三零」））于（「桶」小于「三一」）则
+　否则若「俱且」于（非（「桶」小于「三零」））于（「桶」小于「三一」）则
 　　『1E00;Changes_When_NFKC_Casefolded
 1E02;Changes_When_NFKC_Casefolded
 1E04;Changes_When_NFKC_Casefolded
@@ -498,7 +498,7 @@
 1EFC;Changes_When_NFKC_Casefolded
 1EFE;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「三一」））于（「桶」小于「三二」）则
+　否则若「俱且」于（非（「桶」小于「三一」））于（「桶」小于「三二」）则
 　　『1F08..1F0F;Changes_When_NFKC_Casefolded
 1F18..1F1D;Changes_When_NFKC_Casefolded
 1F28..1F2F;Changes_When_NFKC_Casefolded
@@ -535,7 +535,7 @@
 1FF7..1FFC;Changes_When_NFKC_Casefolded
 1FFD..1FFE;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「三二」））于（「桶」小于「三三」）则
+　否则若「俱且」于（非（「桶」小于「三二」））于（「桶」小于「三三」）则
 　　『2000..200A;Changes_When_NFKC_Casefolded
 200B..200F;Changes_When_NFKC_Casefolded
 2011;Changes_When_NFKC_Casefolded
@@ -567,7 +567,7 @@
 2090..209F;Changes_When_NFKC_Casefolded
 20A8;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「三三」））于（「桶」小于「三四」）则
+　否则若「俱且」于（非（「桶」小于「三三」））于（「桶」小于「三四」）则
 　　『2100..2101;Changes_When_NFKC_Casefolded
 2102;Changes_When_NFKC_Casefolded
 2103;Changes_When_NFKC_Casefolded
@@ -595,15 +595,15 @@
 2183;Changes_When_NFKC_Casefolded
 2189;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「三四」））于（「桶」小于「三五」）则
+　否则若「俱且」于（非（「桶」小于「三四」））于（「桶」小于「三五」）则
 　　『222C..222D;Changes_When_NFKC_Casefolded「：换行：」222F..2230;Changes_When_NFKC_Casefolded「：换行：」』
-　否则若「且」于（非（「桶」小于「三五」））于（「桶」小于「三六」）则
+　否则若「俱且」于（非（「桶」小于「三五」））于（「桶」小于「三六」）则
 　　『2329;Changes_When_NFKC_Casefolded「：换行：」232A;Changes_When_NFKC_Casefolded「：换行：」』
-　否则若「且」于（非（「桶」小于「三六」））于（「桶」小于「三七」）则
+　否则若「俱且」于（非（「桶」小于「三六」））于（「桶」小于「三七」）则
 　　『2460..249B;Changes_When_NFKC_Casefolded「：换行：」249C..24E9;Changes_When_NFKC_Casefolded「：换行：」24EA;Changes_When_NFKC_Casefolded「：换行：」』
-　否则若「且」于（非（「桶」小于「四二」））于（「桶」小于「四三」）则
+　否则若「俱且」于（非（「桶」小于「四二」））于（「桶」小于「四三」）则
 　　『2A0C;Changes_When_NFKC_Casefolded「：换行：」2A74..2A76;Changes_When_NFKC_Casefolded「：换行：」2ADC;Changes_When_NFKC_Casefolded「：换行：」』
-　否则若「且」于（非（「桶」小于「四四」））于（「桶」小于「四五」）则
+　否则若「俱且」于（非（「桶」小于「四四」））于（「桶」小于「四五」）则
 　　『2C00..2C2F;Changes_When_NFKC_Casefolded
 2C60;Changes_When_NFKC_Casefolded
 2C62..2C64;Changes_When_NFKC_Casefolded
@@ -668,13 +668,13 @@
 2CED;Changes_When_NFKC_Casefolded
 2CF2;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「四五」））于（「桶」小于「四六」）则
+　否则若「俱且」于（非（「桶」小于「四五」））于（「桶」小于「四六」）则
 　　『2D6F;Changes_When_NFKC_Casefolded「：换行：」』
-　否则若「且」于（非（「桶」小于「四六」））于（「桶」小于「四七」）则
+　否则若「俱且」于（非（「桶」小于「四六」））于（「桶」小于「四七」）则
 　　『2E9F;Changes_When_NFKC_Casefolded「：换行：」2EF3;Changes_When_NFKC_Casefolded「：换行：」』
-　否则若「且」于（非（「桶」小于「四七」））于（「桶」小于「四八」）则
+　否则若「俱且」于（非（「桶」小于「四七」））于（「桶」小于「四八」）则
 　　『2F00..2FD5;Changes_When_NFKC_Casefolded「：换行：」』
-　否则若「且」于（非（「桶」小于「四八」））于（「桶」小于「四九」）则
+　否则若「俱且」于（非（「桶」小于「四八」））于（「桶」小于「四九」）则
 　　『3000;Changes_When_NFKC_Casefolded
 3036;Changes_When_NFKC_Casefolded
 3038..303A;Changes_When_NFKC_Casefolded
@@ -682,12 +682,12 @@
 309F;Changes_When_NFKC_Casefolded
 30FF;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「四九」））于（「桶」小于「五零」）则
+　否则若「俱且」于（非（「桶」小于「四九」））于（「桶」小于「五零」）则
 　　『3131..318E;Changes_When_NFKC_Casefolded
 3192..3195;Changes_When_NFKC_Casefolded
 3196..319F;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「五零」））于（「桶」小于「五一」）则
+　否则若「俱且」于（非（「桶」小于「五零」））于（「桶」小于「五一」）则
 　　『3200..321E;Changes_When_NFKC_Casefolded
 3220..3229;Changes_When_NFKC_Casefolded
 322A..3247;Changes_When_NFKC_Casefolded
@@ -699,9 +699,9 @@
 32B1..32BF;Changes_When_NFKC_Casefolded
 32C0..33FF;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「五一」））于（「桶」小于「五二」）则
+　否则若「俱且」于（非（「桶」小于「五一」））于（「桶」小于「五二」）则
 　　『32C0..33FF;Changes_When_NFKC_Casefolded「：换行：」』
-　否则若「且」于（非（「桶」小于「一六六」））于（「桶」小于「一六七」）则
+　否则若「俱且」于（非（「桶」小于「一六六」））于（「桶」小于「一六七」）则
 　　『A640;Changes_When_NFKC_Casefolded
 A642;Changes_When_NFKC_Casefolded
 A644;Changes_When_NFKC_Casefolded
@@ -741,7 +741,7 @@ A698;Changes_When_NFKC_Casefolded
 A69A;Changes_When_NFKC_Casefolded
 A69C..A69D;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「一六七」））于（「桶」小于「一六八」）则
+　否则若「俱且」于（非（「桶」小于「一六七」））于（「桶」小于「一六八」）则
 　　『A722;Changes_When_NFKC_Casefolded
 A724;Changes_When_NFKC_Casefolded
 A726;Changes_When_NFKC_Casefolded
@@ -827,15 +827,15 @@ A7F1..A7F4;Changes_When_NFKC_Casefolded
 A7F5;Changes_When_NFKC_Casefolded
 A7F8..A7F9;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「一七一」））于（「桶」小于「一七二」）则
+　否则若「俱且」于（非（「桶」小于「一七一」））于（「桶」小于「一七二」）则
 　　『AB5C..AB5F;Changes_When_NFKC_Casefolded
 AB69;Changes_When_NFKC_Casefolded
 AB6C..AB6D;Changes_When_NFKC_Casefolded
 AB70..ABBF;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「二四九」））于（「桶」小于「二五零」）则
+　否则若「俱且」于（非（「桶」小于「二四九」））于（「桶」小于「二五零」）则
 　　『F900..FA0D;Changes_When_NFKC_Casefolded「：换行：」』
-　否则若「且」于（非（「桶」小于「二五零」））于（「桶」小于「二五一」）则
+　否则若「俱且」于（非（「桶」小于「二五零」））于（「桶」小于「二五一」）则
 　　『F900..FA0D;Changes_When_NFKC_Casefolded
 FA10;Changes_When_NFKC_Casefolded
 FA12;Changes_When_NFKC_Casefolded
@@ -846,7 +846,7 @@ FA25..FA26;Changes_When_NFKC_Casefolded
 FA2A..FA6D;Changes_When_NFKC_Casefolded
 FA70..FAD9;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「二五一」））于（「桶」小于「二五二」）则
+　否则若「俱且」于（非（「桶」小于「二五一」））于（「桶」小于「二五二」）则
 　　『FB00..FB06;Changes_When_NFKC_Casefolded
 FB13..FB17;Changes_When_NFKC_Casefolded
 FB1D;Changes_When_NFKC_Casefolded
@@ -860,16 +860,16 @@ FB43..FB44;Changes_When_NFKC_Casefolded
 FB46..FBB1;Changes_When_NFKC_Casefolded
 FBD3..FD3D;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「二五二」））于（「桶」小于「二五三」）则
+　否则若「俱且」于（非（「桶」小于「二五二」））于（「桶」小于「二五三」）则
 　　『FBD3..FD3D;Changes_When_NFKC_Casefolded「：换行：」』
-　否则若「且」于（非（「桶」小于「二五三」））于（「桶」小于「二五四」）则
+　否则若「俱且」于（非（「桶」小于「二五三」））于（「桶」小于「二五四」）则
 　　『FBD3..FD3D;Changes_When_NFKC_Casefolded
 FD50..FD8F;Changes_When_NFKC_Casefolded
 FD92..FDC7;Changes_When_NFKC_Casefolded
 FDF0..FDFB;Changes_When_NFKC_Casefolded
 FDFC;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「二五四」））于（「桶」小于「二五五」）则
+　否则若「俱且」于（非（「桶」小于「二五四」））于（「桶」小于「二五五」）则
 　　『FE00..FE0F;Changes_When_NFKC_Casefolded
 FE10..FE16;Changes_When_NFKC_Casefolded
 FE17;Changes_When_NFKC_Casefolded
@@ -919,7 +919,7 @@ FE74;Changes_When_NFKC_Casefolded
 FE76..FEFC;Changes_When_NFKC_Casefolded
 FEFF;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「二五五」））于（「桶」小于「二五六」）则
+　否则若「俱且」于（非（「桶」小于「二五五」））于（「桶」小于「二五六」）则
 　　『FF01..FF03;Changes_When_NFKC_Casefolded
 FF04;Changes_When_NFKC_Casefolded
 FF05..FF07;Changes_When_NFKC_Casefolded
@@ -977,39 +977,39 @@ FFF0..FFF8;Changes_When_NFKC_Casefolded
 
 「二元规范表一」乃化「数」为「文」者也。
 「二元规范表一」者得「桶」而
-　若「且」于（非（「桶」小于「二六零」））于（「桶」小于「二六一」）则
+　若「俱且」于（非（「桶」小于「二六零」））于（「桶」小于「二六一」）则
 　　『10400..10427;Changes_When_NFKC_Casefolded「：换行：」104B0..104D3;Changes_When_NFKC_Casefolded「：换行：」』
-　否则若「且」于（非（「桶」小于「二六一」））于（「桶」小于「二六二」）则
+　否则若「俱且」于（非（「桶」小于「二六一」））于（「桶」小于「二六二」）则
 　　『10570..1057A;Changes_When_NFKC_Casefolded
 1057C..1058A;Changes_When_NFKC_Casefolded
 1058C..10592;Changes_When_NFKC_Casefolded
 10594..10595;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「二六三」））于（「桶」小于「二六四」）则
+　否则若「俱且」于（非（「桶」小于「二六三」））于（「桶」小于「二六四」）则
 　　『10781..10785;Changes_When_NFKC_Casefolded
 10787..107B0;Changes_When_NFKC_Casefolded
 107B2..107BF;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「二六八」））于（「桶」小于「二六九」）则
+　否则若「俱且」于（非（「桶」小于「二六八」））于（「桶」小于「二六九」）则
 　　『10C80..10CB2;Changes_When_NFKC_Casefolded「：换行：」』
-　否则若「且」于（非（「桶」小于「二六九」））于（「桶」小于「二七零」）则
+　否则若「俱且」于（非（「桶」小于「二六九」））于（「桶」小于「二七零」）则
 　　『10D50..10D65;Changes_When_NFKC_Casefolded「：换行：」』
-　否则若「且」于（非（「桶」小于「二八零」））于（「桶」小于「二八一」）则
+　否则若「俱且」于（非（「桶」小于「二八零」））于（「桶」小于「二八一」）则
 　　『118A0..118BF;Changes_When_NFKC_Casefolded「：换行：」』
-　否则若「且」于（非（「桶」小于「三六六」））于（「桶」小于「三六七」）则
+　否则若「俱且」于（非（「桶」小于「三六六」））于（「桶」小于「三六七」）则
 　　『16E40..16E5F;Changes_When_NFKC_Casefolded「：换行：」16EA0..16EB8;Changes_When_NFKC_Casefolded「：换行：」』
-　否则若「且」于（非（「桶」小于「四三三」））于（「桶」小于「四三四」）则
+　否则若「俱且」于（非（「桶」小于「四三三」））于（「桶」小于「四三四」）则
 　　『1B123..1B126;Changes_When_NFKC_Casefolded「：换行：」』
-　否则若「且」于（非（「桶」小于「四四四」））于（「桶」小于「四四五」）则
+　否则若「俱且」于（非（「桶」小于「四四四」））于（「桶」小于「四四五」）则
 　　『1BCA0..1BCA3;Changes_When_NFKC_Casefolded「：换行：」』
-　否则若「且」于（非（「桶」小于「四六零」））于（「桶」小于「四六一」）则
+　否则若「俱且」于（非（「桶」小于「四六零」））于（「桶」小于「四六一」）则
 　　『1CCD6..1CCEF;Changes_When_NFKC_Casefolded「：换行：」1CCF0..1CCF9;Changes_When_NFKC_Casefolded「：换行：」』
-　否则若「且」于（非（「桶」小于「四六五」））于（「桶」小于「四六六」）则
+　否则若「俱且」于（非（「桶」小于「四六五」））于（「桶」小于「四六六」）则
 　　『1D15E..1D164;Changes_When_NFKC_Casefolded
 1D173..1D17A;Changes_When_NFKC_Casefolded
 1D1BB..1D1C0;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「四六八」））于（「桶」小于「四六九」）则
+　否则若「俱且」于（非（「桶」小于「四六八」））于（「桶」小于「四六九」）则
 　　『1D400..1D454;Changes_When_NFKC_Casefolded
 1D456..1D49C;Changes_When_NFKC_Casefolded
 1D49E..1D49F;Changes_When_NFKC_Casefolded
@@ -1021,7 +1021,7 @@ FFF0..FFF8;Changes_When_NFKC_Casefolded
 1D4BD..1D4C3;Changes_When_NFKC_Casefolded
 1D4C5..1D505;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「四六九」））于（「桶」小于「四七零」）则
+　否则若「俱且」于（非（「桶」小于「四六九」））于（「桶」小于「四七零」）则
 　　『1D4C5..1D505;Changes_When_NFKC_Casefolded
 1D507..1D50A;Changes_When_NFKC_Casefolded
 1D50D..1D514;Changes_When_NFKC_Casefolded
@@ -1033,7 +1033,7 @@ FFF0..FFF8;Changes_When_NFKC_Casefolded
 1D54A..1D550;Changes_When_NFKC_Casefolded
 1D552..1D6A6;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「四七零」））于（「桶」小于「四七一」）则
+　否则若「俱且」于（非（「桶」小于「四七零」））于（「桶」小于「四七一」）则
 　　『1D552..1D6A6;Changes_When_NFKC_Casefolded
 1D6A8..1D6C0;Changes_When_NFKC_Casefolded
 1D6C1;Changes_When_NFKC_Casefolded
@@ -1043,7 +1043,7 @@ FFF0..FFF8;Changes_When_NFKC_Casefolded
 1D6FB;Changes_When_NFKC_Casefolded
 1D6FC..1D714;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「四七一」））于（「桶」小于「四七二」）则
+　否则若「俱且」于（非（「桶」小于「四七一」））于（「桶」小于「四七二」）则
 　　『1D6FC..1D714;Changes_When_NFKC_Casefolded
 1D715;Changes_When_NFKC_Casefolded
 1D716..1D734;Changes_When_NFKC_Casefolded
@@ -1061,7 +1061,7 @@ FFF0..FFF8;Changes_When_NFKC_Casefolded
 1D7C4..1D7CB;Changes_When_NFKC_Casefolded
 1D7CE..1D7FF;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「四七九」））于（「桶」小于「四八零」）则
+　否则若「俱且」于（非（「桶」小于「四七九」））于（「桶」小于「四八零」）则
 　　『1DF40;Changes_When_NFKC_Casefolded
 1DF48;Changes_When_NFKC_Casefolded
 1DF4A;Changes_When_NFKC_Casefolded
@@ -1081,11 +1081,11 @@ FFF0..FFF8;Changes_When_NFKC_Casefolded
 1DF95;Changes_When_NFKC_Casefolded
 1DFCD..1DFFF;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「四八零」））于（「桶」小于「四八一」）则
+　否则若「俱且」于（非（「桶」小于「四八零」））于（「桶」小于「四八一」）则
 　　『1E030..1E06D;Changes_When_NFKC_Casefolded「：换行：」』
-　否则若「且」于（非（「桶」小于「四八九」））于（「桶」小于「四九零」）则
+　否则若「俱且」于（非（「桶」小于「四八九」））于（「桶」小于「四九零」）则
 　　『1E900..1E921;Changes_When_NFKC_Casefolded「：换行：」』
-　否则若「且」于（非（「桶」小于「四九四」））于（「桶」小于「四九五」）则
+　否则若「俱且」于（非（「桶」小于「四九四」））于（「桶」小于「四九五」）则
 　　『1EE00..1EE03;Changes_When_NFKC_Casefolded
 1EE05..1EE1F;Changes_When_NFKC_Casefolded
 1EE21..1EE22;Changes_When_NFKC_Casefolded
@@ -1120,20 +1120,20 @@ FFF0..FFF8;Changes_When_NFKC_Casefolded
 1EEA5..1EEA9;Changes_When_NFKC_Casefolded
 1EEAB..1EEBB;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「四九七」））于（「桶」小于「四九八」）则
+　否则若「俱且」于（非（「桶」小于「四九七」））于（「桶」小于「四九八」）则
 　　『1F100..1F10A;Changes_When_NFKC_Casefolded
 1F110..1F12E;Changes_When_NFKC_Casefolded
 1F130..1F14F;Changes_When_NFKC_Casefolded
 1F16A..1F16C;Changes_When_NFKC_Casefolded
 1F190;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「四九八」））于（「桶」小于「四九九」）则
+　否则若「俱且」于（非（「桶」小于「四九八」））于（「桶」小于「四九九」）则
 　　『1F200..1F202;Changes_When_NFKC_Casefolded
 1F210..1F23B;Changes_When_NFKC_Casefolded
 1F240..1F248;Changes_When_NFKC_Casefolded
 1F250..1F251;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「五零七」））于（「桶」小于「五零八」）则
+　否则若「俱且」于（非（「桶」小于「五零七」））于（「桶」小于「五零八」）则
 　　『1FBF0..1FBF9;Changes_When_NFKC_Casefolded「：换行：」』
 　否则
 　　『』
@@ -1141,7 +1141,7 @@ FFF0..FFF8;Changes_When_NFKC_Casefolded
 
 「二元规范表二」乃化「数」为「文」者也。
 「二元规范表二」者得「桶」而
-　若「且」于（非（「桶」小于「七六零」））于（「桶」小于「七六三」）则『2F800..2FA1D;Changes_When_NFKC_Casefolded「：换行：」』否则『』
+　若「俱且」于（非（「桶」小于「七六零」））于（「桶」小于「七六三」）则『2F800..2FA1D;Changes_When_NFKC_Casefolded「：换行：」』否则『』
 也。
 
 「二元规范表三」乃化「数」为「文」者也。
@@ -1201,16 +1201,16 @@ FFF0..FFF8;Changes_When_NFKC_Casefolded
 
 「二元规范表一四」乃化「数」为「文」者也。
 「二元规范表一四」者得「桶」而
-　若「且」于（非（「桶」小于「三五八四」））于（「桶」小于「三五八五」）则
+　若「俱且」于（非（「桶」小于「三五八四」））于（「桶」小于「三五八五」）则
 　　『E0000;Changes_When_NFKC_Casefolded
 E0001;Changes_When_NFKC_Casefolded
 E0002..E001F;Changes_When_NFKC_Casefolded
 E0020..E007F;Changes_When_NFKC_Casefolded
 E0080..E00FF;Changes_When_NFKC_Casefolded
 』
-　否则若「且」于（非（「桶」小于「三五八五」））于（「桶」小于「三五八六」）则
+　否则若「俱且」于（非（「桶」小于「三五八五」））于（「桶」小于「三五八六」）则
 　　『E0100..E01EF;Changes_When_NFKC_Casefolded「：换行：」E01F0..E0FFF;Changes_When_NFKC_Casefolded「：换行：」』
-　否则若「且」于（非（「桶」小于「三五八六」））于（「桶」小于「三六零零」）则
+　否则若「俱且」于（非（「桶」小于「三五八六」））于（「桶」小于「三六零零」）则
 　　『E01F0..E0FFF;Changes_When_NFKC_Casefolded「：换行：」』
 　否则
 　　『』

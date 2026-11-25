@@ -56,7 +56,7 @@
 「甲空间」者「急就在境行篇」于「模块根境」于「内存加载器」于「键」曰『a』于「源码」曰（「内存源」于『a』）也。
 
 「断言」
-　于（「且」
+　于（「俱且」
 　　于（「急就严格等」于（「读导出」于「甲空间」于『r』）于（「急就数值」于「二一点零」））
 　　于（「急就严格等」于（「读导出」于「甲空间」于『late』）于（「急就数值」于「七点零」）））
 　于『模块导入导出与实时绑定』。
@@ -113,18 +113,18 @@
 也。
 
 「断言」
-　于（「且」
-　　于（「且」
-　　　于（「且」于（「坏模块吗」于『var x; export {x}; export {x};』）于（「坏模块吗」于『var y; export default 1; export {y as default};』））
-　　　于（「且」于（「坏模块吗」于『export {nothing};』）于（「坏模块吗」于『import {a as eval} from "m";』）））
-　　于（「且」
-　　　于（「且」于（「坏模块吗」于『import {a, b as a} from "m";』）于（「坏模块吗」于『class F {} export default function F() {}』））
-　　　于（「且」
+　于（「俱且」
+　　于（「俱且」
+　　　于（「俱且」于（「坏模块吗」于『var x; export {x}; export {x};』）于（「坏模块吗」于『var y; export default 1; export {y as default};』））
+　　　于（「俱且」于（「坏模块吗」于『export {nothing};』）于（「坏模块吗」于『import {a as eval} from "m";』）））
+　　于（「俱且」
+　　　于（「俱且」于（「坏模块吗」于『import {a, b as a} from "m";』）于（「坏模块吗」于『class F {} export default function F() {}』））
+　　　于（「俱且」
 　　　　于（「坏模块吗」于『export function f() {} export function *f() {}』）
-　　　　于（「且」于（「坏模块吗」于『import "m" with { type: "json", type: "x" };』）于（「坏模块吗」于『export default function() {}();』）））））
+　　　　于（「俱且」于（「坏模块吗」于『import "m" with { type: "json", type: "x" };』）于（「坏模块吗」于『export default function() {}();』）））））
 　于『捷思模块的早期错误』。
 「断言」
-　于（「且」
+　于（「俱且」
 　　于（非（「坏模块吗」于『import {a} from "m"; export {a}; var b; export {b as c}; export default function d() {} export {d as e};』））
 　　于（非（「坏模块吗」于『export * as ns from "m"; export * from "m"; export {z} from "m"; export let q = 1; export class K {}』）））
 　于『捷思模块的好写法不受早期错误影响』。

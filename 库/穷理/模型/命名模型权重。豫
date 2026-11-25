@@ -52,7 +52,7 @@
 「命名层尾名」者得「尾」而
 　若「文同」于「尾」于『attn_norm.weight』则
 　　『input_layernorm.weight』
-　否则若「或」于（「文同」于「尾」于『ffn_norm.weight』）于（「文同」于「尾」于『post_attention_norm.weight』）则
+　否则若「俱或」于（「文同」于「尾」于『ffn_norm.weight』）于（「文同」于「尾」于『post_attention_norm.weight』）则
 　　『post_attention_layernorm.weight』
 　否则若「文同」于「尾」于『attn_q.weight』则
 　　『self_attn.q_proj.weight』
@@ -141,13 +141,13 @@
 「命名取权重」乃化「命名权重」又化「结绳」又化「文」又化「文」为「算阵」者也。
 「命名取权重」者得「诸」又得「配置」又得「前缀」又得「名」而
 　令「架构」为「命名架构」于「配置」而
-　若「或」于（「文同」于「名」于『token_embd.weight』）于（「文同」于「名」于『output.weight』）则
+　若「俱或」于（「文同」于「名」于『token_embd.weight』）于（「文同」于「名」于『output.weight』）则
 　　「命名取参」于「诸」于（「命名参名」于「前缀」于「名」）
 　否则
 　　令「尾」为若「文同」于「名」于『output_norm.weight』则「名」否则（「命名层尾」于「名」）中「一」而
-　　若「或」
+　　若「俱或」
 　　　于（「文同」于「尾」于『ffn_gate_exps.weight』）
-　　　于（「或」于（「文同」于「尾」于『ffn_up_exps.weight』）于（「文同」于「尾」于『ffn_down_exps.weight』））则
+　　　于（「俱或」于（「文同」于「尾」于『ffn_up_exps.weight』）于（「文同」于「尾」于『ffn_down_exps.weight』））则
 　　　　令「层」为（「命名层尾」于「名」）中「零」而
 　　　　「命名专家权」于「诸」于（「前缀」接『layers.』接「层」接『.』）于「尾」于（「命名整」于（「命名文字设」于「配置」）于『num_experts』于「一」）
 　　否则
@@ -162,13 +162,13 @@
 　　　否则若「文同」于「尾」于『ssm_conv1d.weight』则
 　　　　令「形」为「算阵形状」于「量」而
 　　　　「改形」于「量」于（「列」【（「第」以「数」于「零」于「形」），（「第」以「数」于「二」于「形」）】）
-　　　否则若「或」
+　　　否则若「俱或」
 　　　　于（「文同」于「尾」于『output_norm.weight』）
-　　　　于（「或」
+　　　　于（「俱或」
 　　　　　于（「文同」于「尾」于『attn_norm.weight』）
-　　　　　于（「或」
+　　　　　于（「俱或」
 　　　　　　于（「文同」于「尾」于『post_attention_norm.weight』）
-　　　　　　于（「或」于（「文同」于「尾」于『attn_q_norm.weight』）于（「文同」于「尾」于『attn_k_norm.weight』））））则
+　　　　　　于（「俱或」于（「文同」于「尾」于『attn_q_norm.weight』）于（「文同」于「尾」于『attn_k_norm.weight』））））则
 　　　　　　　「数加」于「量」于「一点零」
 　　　否则
 　　　　「量」

@@ -5,24 +5,24 @@
 
 「合成排除表零」乃化「数」为「文」者也。
 「合成排除表零」者得「桶」而
-　若「且」于（非（「桶」小于「三」））于（「桶」小于「四」）则
+　若「俱且」于（非（「桶」小于「三」））于（「桶」小于「四」）则
 　　『0340..0341;Full_Composition_Exclusion
 0343..0344;Full_Composition_Exclusion
 0374;Full_Composition_Exclusion
 037E;Full_Composition_Exclusion
 0387;Full_Composition_Exclusion
 』
-　否则若「且」于（非（「桶」小于「九」））于（「桶」小于「一零」）则
+　否则若「俱且」于（非（「桶」小于「九」））于（「桶」小于「一零」）则
 　　『0958..095F;Full_Composition_Exclusion「：换行：」09DC..09DD;Full_Composition_Exclusion「：换行：」09DF;Full_Composition_Exclusion「：换行：」』
-　否则若「且」于（非（「桶」小于「一零」））于（「桶」小于「一一」）则
+　否则若「俱且」于（非（「桶」小于「一零」））于（「桶」小于「一一」）则
 　　『0A33;Full_Composition_Exclusion
 0A36;Full_Composition_Exclusion
 0A59..0A5B;Full_Composition_Exclusion
 0A5E;Full_Composition_Exclusion
 』
-　否则若「且」于（非（「桶」小于「一一」））于（「桶」小于「一二」）则
+　否则若「俱且」于（非（「桶」小于「一一」））于（「桶」小于「一二」）则
 　　『0B5C..0B5D;Full_Composition_Exclusion「：换行：」』
-　否则若「且」于（非（「桶」小于「一五」））于（「桶」小于「一六」）则
+　否则若「俱且」于（非（「桶」小于「一五」））于（「桶」小于「一六」）则
 　　『0F43;Full_Composition_Exclusion
 0F4D;Full_Composition_Exclusion
 0F52;Full_Composition_Exclusion
@@ -40,7 +40,7 @@
 0FAC;Full_Composition_Exclusion
 0FB9;Full_Composition_Exclusion
 』
-　否则若「且」于（非（「桶」小于「三一」））于（「桶」小于「三二」）则
+　否则若「俱且」于（非（「桶」小于「三一」））于（「桶」小于「三二」）则
 　　『1F71;Full_Composition_Exclusion
 1F73;Full_Composition_Exclusion
 1F75;Full_Composition_Exclusion
@@ -61,17 +61,17 @@
 1FFB;Full_Composition_Exclusion
 1FFD;Full_Composition_Exclusion
 』
-　否则若「且」于（非（「桶」小于「三二」））于（「桶」小于「三三」）则
+　否则若「俱且」于（非（「桶」小于「三二」））于（「桶」小于「三三」）则
 　　『2000..2001;Full_Composition_Exclusion「：换行：」』
-　否则若「且」于（非（「桶」小于「三三」））于（「桶」小于「三四」）则
+　否则若「俱且」于（非（「桶」小于「三三」））于（「桶」小于「三四」）则
 　　『2126;Full_Composition_Exclusion「：换行：」212A..212B;Full_Composition_Exclusion「：换行：」』
-　否则若「且」于（非（「桶」小于「三五」））于（「桶」小于「三六」）则
+　否则若「俱且」于（非（「桶」小于「三五」））于（「桶」小于「三六」）则
 　　『2329;Full_Composition_Exclusion「：换行：」232A;Full_Composition_Exclusion「：换行：」』
-　否则若「且」于（非（「桶」小于「四二」））于（「桶」小于「四三」）则
+　否则若「俱且」于（非（「桶」小于「四二」））于（「桶」小于「四三」）则
 　　『2ADC;Full_Composition_Exclusion「：换行：」』
-　否则若「且」于（非（「桶」小于「二四九」））于（「桶」小于「二五零」）则
+　否则若「俱且」于（非（「桶」小于「二四九」））于（「桶」小于「二五零」）则
 　　『F900..FA0D;Full_Composition_Exclusion「：换行：」』
-　否则若「且」于（非（「桶」小于「二五零」））于（「桶」小于「二五一」）则
+　否则若「俱且」于（非（「桶」小于「二五零」））于（「桶」小于「二五一」）则
 　　『F900..FA0D;Full_Composition_Exclusion
 FA10;Full_Composition_Exclusion
 FA12;Full_Composition_Exclusion
@@ -82,7 +82,7 @@ FA25..FA26;Full_Composition_Exclusion
 FA2A..FA6D;Full_Composition_Exclusion
 FA70..FAD9;Full_Composition_Exclusion
 』
-　否则若「且」于（非（「桶」小于「二五一」））于（「桶」小于「二五二」）则
+　否则若「俱且」于（非（「桶」小于「二五一」））于（「桶」小于「二五二」）则
 　　『FB1D;Full_Composition_Exclusion
 FB1F;Full_Composition_Exclusion
 FB2A..FB36;Full_Composition_Exclusion
@@ -98,7 +98,7 @@ FB46..FB4E;Full_Composition_Exclusion
 
 「合成排除表一」乃化「数」为「文」者也。
 「合成排除表一」者得「桶」而
-　若「且」于（非（「桶」小于「四六五」））于（「桶」小于「四六六」）则
+　若「俱且」于（非（「桶」小于「四六五」））于（「桶」小于「四六六」）则
 　　『1D15E..1D164;Full_Composition_Exclusion「：换行：」1D1BB..1D1C0;Full_Composition_Exclusion「：换行：」』
 　否则
 　　『』
@@ -106,7 +106,7 @@ FB46..FB4E;Full_Composition_Exclusion
 
 「合成排除表二」乃化「数」为「文」者也。
 「合成排除表二」者得「桶」而
-　若「且」于（非（「桶」小于「七六零」））于（「桶」小于「七六三」）则『2F800..2FA1D;Full_Composition_Exclusion「：换行：」』否则『』
+　若「俱且」于（非（「桶」小于「七六零」））于（「桶」小于「七六三」）则『2F800..2FA1D;Full_Composition_Exclusion「：换行：」』否则『』
 也。
 
 「合成排除表三」乃化「数」为「文」者也。

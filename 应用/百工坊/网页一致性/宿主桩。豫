@@ -122,21 +122,21 @@
 　　「列」【『text』，『arrayBuffer』，『slice』，『stream』】
 　否则若「文同」于「名」于『Headers』则
 　　「列」【『get』，『set』，『has』，『append』，『delete』，『forEach』】
-　否则若「或」于（「文同」于「名」于『Request』）于（「文同」于「名」于『Response』）则
+　否则若「俱或」于（「文同」于「名」于『Request』）于（「文同」于「名」于『Response』）则
 　　「列」【『json』，『text』，『arrayBuffer』，『blob』，『clone』】
-　否则若「或」于（「文同」于「名」于『Event』）于（「文同」于「名」于『CustomEvent』）则
+　否则若「俱或」于（「文同」于「名」于『Event』）于（「文同」于「名」于『CustomEvent』）则
 　　「列」【『preventDefault』，『stopPropagation』，『stopImmediatePropagation』】
 　否则若「文同」于「名」于『EventTarget』则
 　　「列」【『addEventListener』，『removeEventListener』，『dispatchEvent』】
 　否则若「文同」于「名」于『AbortController』则
 　　「列」【『abort』】
-　否则若「或」于（「文同」于「名」于『Worker』）于（「文同」于「名」于『SharedWorker』）则
+　否则若「俱或」于（「文同」于「名」于『Worker』）于（「文同」于「名」于『SharedWorker』）则
 　　「列」【『postMessage』，『terminate』，『addEventListener』，『removeEventListener』】
 　否则若「文同」于「名」于『BroadcastChannel』则
 　　「列」【『postMessage』，『close』，『addEventListener』】
-　否则若「或」
+　否则若「俱或」
 　　于（「文同」于「名」于『MutationObserver』）
-　　于（「或」于（「文同」于「名」于『ResizeObserver』）于（「文同」于「名」于『IntersectionObserver』））则
+　　于（「俱或」于（「文同」于「名」于『ResizeObserver』）于（「文同」于「名」于『IntersectionObserver』））则
 　　　「列」【『observe』，『unobserve』，『disconnect』，『takeRecords』】
 　否则若「文同」于「名」于『WebSocket』则
 　　「列」【『send』，『close』，『addEventListener』】
@@ -148,9 +148,9 @@
 　　「列」【『getReader』，『pipeThrough』，『pipeTo』，『cancel』，『tee』】
 　否则若「文同」于「名」于『WritableStream』则
 　　「列」【『getWriter』，『abort』，『close』】
-　否则若「或」
+　否则若「俱或」
 　　于（「文同」于「名」于『Uint8Array』）
-　　于（「或」于（「文同」于「名」于『Int32Array』）于（「或」于（「文同」于「名」于『Float32Array』）于（「文同」于「名」于『Float64Array』）））则
+　　于（「俱或」于（「文同」于「名」于『Int32Array』）于（「俱或」于（「文同」于「名」于『Float32Array』）于（「文同」于「名」于『Float64Array』）））则
 　　　「列」【『set』，『subarray』，『slice』，『fill』，『forEach』，『map』，『indexOf』，『join』】
 　否则
 　　「罄」以「文」
@@ -340,7 +340,7 @@
 「值转毫秒」乃化「急就值」为「小数」者也。
 「值转毫秒」者得「值」而
 　鉴「值」而
-　　或有（「急就数值」于得「其数」）则若「或」于（「小数非数」于「其数」）于（「小数小于」于「其数」于「零点零」）则「零点零」否则「其数」
+　　或有（「急就数值」于得「其数」）则若「俱或」于（「小数非数」于「其数」）于（「小数小于」于「其数」于「零点零」）则「零点零」否则「其数」
 　　或有得「余值」则「零点零」
 也。
 
@@ -395,9 +395,9 @@
 　　于（得「项」又得「累」而
 　　　鉴「累」而
 　　　　或有（「可有」于得「旧」）则
-　　　　　若「或」
+　　　　　若「俱或」
 　　　　　　于（「小数小于」于（「项」中「定时到期」）于（「旧」中「定时到期」））
-　　　　　　于（「且」于（「小数等于」于（「项」中「定时到期」）于（「旧」中「定时到期」））于（（「项」中「定时号」）小于（「旧」中「定时号」）））则
+　　　　　　于（「俱且」于（「小数等于」于（「项」中「定时到期」）于（「旧」中「定时到期」））于（（「项」中「定时号」）小于（「旧」中「定时号」）））则
 　　　　　　　「可有」于「项」
 　　　　　否则
 　　　　　　「累」
