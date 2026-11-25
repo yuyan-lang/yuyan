@@ -5,7 +5,7 @@
 
 「二元出表零」乃化「数」为「文」者也。
 「二元出表零」者得「桶」而
-　若「且」于（非（「桶」小于「零」））于（「桶」小于「一」）则
+　若「俱且」于（非（「桶」小于「零」））于（「桶」小于「一」）则
 　　『0028;Bidi_Mirrored
 0029;Bidi_Mirrored
 003C;Bidi_Mirrored
@@ -17,11 +17,11 @@
 00AB;Bidi_Mirrored
 00BB;Bidi_Mirrored
 』
-　否则若「且」于（非（「桶」小于「一五」））于（「桶」小于「一六」）则
+　否则若「俱且」于（非（「桶」小于「一五」））于（「桶」小于「一六」）则
 　　『0F3A;Bidi_Mirrored「：换行：」0F3B;Bidi_Mirrored「：换行：」0F3C;Bidi_Mirrored「：换行：」0F3D;Bidi_Mirrored「：换行：」』
-　否则若「且」于（非（「桶」小于「二二」））于（「桶」小于「二三」）则
+　否则若「俱且」于（非（「桶」小于「二二」））于（「桶」小于「二三」）则
 　　『169B;Bidi_Mirrored「：换行：」169C;Bidi_Mirrored「：换行：」』
-　否则若「且」于（非（「桶」小于「三二」））于（「桶」小于「三三」）则
+　否则若「俱且」于（非（「桶」小于「三二」））于（「桶」小于「三三」）则
 　　『2039;Bidi_Mirrored
 203A;Bidi_Mirrored
 2045;Bidi_Mirrored
@@ -31,9 +31,9 @@
 208D;Bidi_Mirrored
 208E;Bidi_Mirrored
 』
-　否则若「且」于（非（「桶」小于「三三」））于（「桶」小于「三四」）则
+　否则若「俱且」于（非（「桶」小于「三三」））于（「桶」小于「三四」）则
 　　『2140;Bidi_Mirrored「：换行：」』
-　否则若「且」于（非（「桶」小于「三四」））于（「桶」小于「三五」）则
+　否则若「俱且」于（非（「桶」小于「三四」））于（「桶」小于「三五」）则
 　　『2201..2204;Bidi_Mirrored
 2208..220D;Bidi_Mirrored
 2211;Bidi_Mirrored
@@ -60,7 +60,7 @@
 22D6..22ED;Bidi_Mirrored
 22F0..22FF;Bidi_Mirrored
 』
-　否则若「且」于（非（「桶」小于「三五」））于（「桶」小于「三六」）则
+　否则若「俱且」于（非（「桶」小于「三五」））于（「桶」小于「三六」）则
 　　『2308;Bidi_Mirrored
 2309;Bidi_Mirrored
 230A;Bidi_Mirrored
@@ -69,7 +69,7 @@
 2329;Bidi_Mirrored
 232A;Bidi_Mirrored
 』
-　否则若「且」于（非（「桶」小于「三九」））于（「桶」小于「四零」）则
+　否则若「俱且」于（非（「桶」小于「三九」））于（「桶」小于「四零」）则
 　　『2768;Bidi_Mirrored
 2769;Bidi_Mirrored
 276A;Bidi_Mirrored
@@ -104,7 +104,7 @@
 27EE;Bidi_Mirrored
 27EF;Bidi_Mirrored
 』
-　否则若「且」于（非（「桶」小于「四一」））于（「桶」小于「四二」）则
+　否则若「俱且」于（非（「桶」小于「四一」））于（「桶」小于「四二」）则
 　　『2983;Bidi_Mirrored
 2984;Bidi_Mirrored
 2985;Bidi_Mirrored
@@ -146,7 +146,7 @@
 29FC;Bidi_Mirrored
 29FD;Bidi_Mirrored
 』
-　否则若「且」于（非（「桶」小于「四二」））于（「桶」小于「四三」）则
+　否则若「俱且」于（非（「桶」小于「四二」））于（「桶」小于「四三」）则
 　　『2A0A..2A1C;Bidi_Mirrored
 2A1E..2A21;Bidi_Mirrored
 2A24;Bidi_Mirrored
@@ -171,9 +171,9 @@
 2AF7..2AFB;Bidi_Mirrored
 2AFD;Bidi_Mirrored
 』
-　否则若「且」于（非（「桶」小于「四三」））于（「桶」小于「四四」）则
+　否则若「俱且」于（非（「桶」小于「四三」））于（「桶」小于「四四」）则
 　　『2BFE;Bidi_Mirrored「：换行：」』
-　否则若「且」于（非（「桶」小于「四六」））于（「桶」小于「四七」）则
+　否则若「俱且」于（非（「桶」小于「四六」））于（「桶」小于「四七」）则
 　　『2E02;Bidi_Mirrored
 2E03;Bidi_Mirrored
 2E04;Bidi_Mirrored
@@ -205,7 +205,7 @@
 2E62;Bidi_Mirrored
 2E63;Bidi_Mirrored
 』
-　否则若「且」于（非（「桶」小于「四八」））于（「桶」小于「四九」）则
+　否则若「俱且」于（非（「桶」小于「四八」））于（「桶」小于「四九」）则
 　　『3008;Bidi_Mirrored
 3009;Bidi_Mirrored
 300A;Bidi_Mirrored
@@ -225,7 +225,7 @@
 301A;Bidi_Mirrored
 301B;Bidi_Mirrored
 』
-　否则若「且」于（非（「桶」小于「二五四」））于（「桶」小于「二五五」）则
+　否则若「俱且」于（非（「桶」小于「二五四」））于（「桶」小于「二五五」）则
 　　『FE59;Bidi_Mirrored
 FE5A;Bidi_Mirrored
 FE5B;Bidi_Mirrored
@@ -234,7 +234,7 @@ FE5D;Bidi_Mirrored
 FE5E;Bidi_Mirrored
 FE64..FE65;Bidi_Mirrored
 』
-　否则若「且」于（非（「桶」小于「二五五」））于（「桶」小于「二五六」）则
+　否则若「俱且」于（非（「桶」小于「二五五」））于（「桶」小于「二五六」）则
 　　『FF08;Bidi_Mirrored
 FF09;Bidi_Mirrored
 FF1C;Bidi_Mirrored
@@ -254,13 +254,13 @@ FF63;Bidi_Mirrored
 
 「二元出表一」乃化「数」为「文」者也。
 「二元出表一」者得「桶」而
-　若「且」于（非（「桶」小于「四六二」））于（「桶」小于「四六三」）则
+　若「俱且」于（非（「桶」小于「四六二」））于（「桶」小于「四六三」）则
 　　『1CEDD..1CEDF;Bidi_Mirrored「：换行：」』
-　否则若「且」于（非（「桶」小于「四七零」））于（「桶」小于「四七一」）则
+　否则若「俱且」于（非（「桶」小于「四七零」））于（「桶」小于「四七一」）则
 　　『1D6DB;Bidi_Mirrored「：换行：」』
-　否则若「且」于（非（「桶」小于「四七一」））于（「桶」小于「四七二」）则
+　否则若「俱且」于（非（「桶」小于「四七一」））于（「桶」小于「四七二」）则
 　　『1D715;Bidi_Mirrored「：换行：」1D74F;Bidi_Mirrored「：换行：」1D789;Bidi_Mirrored「：换行：」1D7C3;Bidi_Mirrored「：换行：」』
-　否则若「且」于（非（「桶」小于「四七五」））于（「桶」小于「四七六」）则
+　否则若「俱且」于（非（「桶」小于「四七五」））于（「桶」小于「四七六」）则
 　　『1DB03..1DB09;Bidi_Mirrored「：换行：」1DB10;Bidi_Mirrored「：换行：」1DB17..1DB18;Bidi_Mirrored「：换行：」1DB1B;Bidi_Mirrored「：换行：」』
 　否则
 　　『』

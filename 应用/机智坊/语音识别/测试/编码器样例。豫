@@ -15,37 +15,37 @@
 　令「降维」为「文同」于「名字」于『encoder.blocks.0.mlp.2.weight』而
 　令「长偏」为「文同」于「名字」于『encoder.blocks.0.mlp.0.bias』而
 　令「归权」为
-　　「或」
+　　「俱或」
 　　　于（「文同」于「名字」于『encoder.blocks.0.attn_ln.weight』）
-　　　于（「或」于（「文同」于「名字」于『encoder.blocks.0.mlp_ln.weight』）于（「文同」于「名字」于『encoder.ln_post.weight』））而
+　　　于（「俱或」于（「文同」于「名字」于『encoder.blocks.0.mlp_ln.weight』）于（「文同」于「名字」于『encoder.ln_post.weight』））而
 　令「偏置」为
-　　「或」
+　　「俱或」
 　　　于「长偏」
-　　　于（「或」
+　　　于（「俱或」
 　　　　于（「文同」于「名字」于『encoder.conv1.bias』）
-　　　　于（「或」
+　　　　于（「俱或」
 　　　　　于（「文同」于「名字」于『encoder.conv2.bias』）
-　　　　　于（「或」
+　　　　　于（「俱或」
 　　　　　　于（「文同」于「名字」于『encoder.blocks.0.attn.query.bias』）
-　　　　　　于（「或」
+　　　　　　于（「俱或」
 　　　　　　　于（「文同」于「名字」于『encoder.blocks.0.attn.value.bias』）
-　　　　　　　于（「或」
+　　　　　　　于（「俱或」
 　　　　　　　　于（「文同」于「名字」于『encoder.blocks.0.attn.out.bias』）
-　　　　　　　　于（「或」
+　　　　　　　　于（「俱或」
 　　　　　　　　　于（「文同」于「名字」于『encoder.blocks.0.mlp.2.bias』）
-　　　　　　　　　于（「或」
+　　　　　　　　　于（「俱或」
 　　　　　　　　　　于（「文同」于「名字」于『encoder.blocks.0.attn_ln.bias』）
-　　　　　　　　　　于（「或」于（「文同」于「名字」于『encoder.blocks.0.mlp_ln.bias』）于（「文同」于「名字」于『encoder.ln_post.bias』）））））））））而
+　　　　　　　　　　于（「俱或」于（「文同」于「名字」于『encoder.blocks.0.mlp_ln.bias』）于（「文同」于「名字」于『encoder.ln_post.bias』）））））））））而
 　令「其数」为
 　　若「卷一」则
 　　　「九六零」
 　　否则若「卷二」则
 　　　「四八」
-　　否则若「或」于「升维」于「降维」则
+　　否则若「俱或」于「升维」于「降维」则
 　　　「六四」
 　　否则若「长偏」则
 　　　「一六」
-　　否则若「或」于「归权」于「偏置」则
+　　否则若「俱或」于「归权」于「偏置」则
 　　　「四」
 　　否则
 　　　「一六」而

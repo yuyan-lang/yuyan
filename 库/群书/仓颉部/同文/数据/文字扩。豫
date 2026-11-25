@@ -5,9 +5,9 @@
 
 「文字扩表零」乃化「数」为「文」者也。
 「文字扩表零」者得「桶」而
-　若「且」于（非（「桶」小于「零」））于（「桶」小于「一」）则
+　若「俱且」于（非（「桶」小于「零」））于（「桶」小于「一」）则
 　　『00B7;Avst Cari Copt Dupl Elba Geor Glag Gong Goth Grek Hani Latn Lydi Mahj Perm Shaw「：换行：」』
-　否则若「且」于（非（「桶」小于「二」））于（「桶」小于「三」）则
+　否则若「俱且」于（非（「桶」小于「二」））于（「桶」小于「三」）则
 　　『02BC;Beng Cyrl Deva Latn Lisu Thai Toto
 02C7;Bopo Latn
 02C9..02CB;Bopo Latn
@@ -15,7 +15,7 @@
 02D7;Latn Thai
 02D9;Bopo Latn
 』
-　否则若「且」于（非（「桶」小于「三」））于（「桶」小于「四」）则
+　否则若「俱且」于（非（「桶」小于「三」））于（「桶」小于「四」）则
 　　『0300;Cher Copt Cyrl Grek Latn Perm Sunu Tale
 0301;Cher Cyrl Grek Latn Osge Sunu Tale Todr
 0302;Cher Cyrl Latn Tfng
@@ -49,11 +49,11 @@
 0374;Copt Grek
 0375;Copt Grek
 』
-　否则若「且」于（非（「桶」小于「四」））于（「桶」小于「五」）则
+　否则若「俱且」于（非（「桶」小于「四」））于（「桶」小于「五」）则
 　　『0483;Cyrl Perm「：换行：」0484;Cyrl Glag「：换行：」0485..0486;Cyrl Latn「：换行：」0487;Cyrl Glag「：换行：」』
-　否则若「且」于（非（「桶」小于「五」））于（「桶」小于「六」）则
+　否则若「俱且」于（非（「桶」小于「五」））于（「桶」小于「六」）则
 　　『0589;Armn Geor Glag「：换行：」』
-　否则若「且」于（非（「桶」小于「六」））于（「桶」小于「七」）则
+　否则若「俱且」于（非（「桶」小于「六」））于（「桶」小于「七」）则
 　　『060C;Arab Gara Nkoo Rohg Syrc Thaa Yezi
 061B;Arab Gara Nkoo Rohg Syrc Thaa Yezi
 061C;Arab Syrc Thaa
@@ -64,7 +64,7 @@
 0670;Arab Syrc
 06D4;Arab Rohg
 』
-　否则若「且」于（非（「桶」小于「九」））于（「桶」小于「一零」）则
+　否则若「俱且」于（非（「桶」小于「九」））于（「桶」小于「一零」）则
 　　『0951;Beng Deva Gran Gujr Guru Knda Latn Mlym Nand Newa Orya Shrd Taml Telu Tirh
 0952;Beng Deva Gran Gujr Guru Knda Latn Mlym Newa Orya Taml Telu Tirh
 0964;Beng Deva Dogr Gong Gonm Gran Gujr Guru Knda Mahj Mlym Nand Onao Orya Sind Sinh Sylo Takr Taml Telu Tirh
@@ -72,21 +72,21 @@
 0966..096F;Deva Dogr Kthi Mahj
 09E6..09EF;Beng Cakm Sylo
 』
-　否则若「且」于（非（「桶」小于「一零」））于（「桶」小于「一一」）则
+　否则若「俱且」于（非（「桶」小于「一零」））于（「桶」小于「一一」）则
 　　『0A66..0A6F;Guru Mult「：换行：」0AE6..0AEF;Gujr Khoj「：换行：」』
-　否则若「且」于（非（「桶」小于「一一」））于（「桶」小于「一二」）则
+　否则若「俱且」于（非（「桶」小于「一一」））于（「桶」小于「一二」）则
 　　『0B83;Knda Mlym Taml Telu「：换行：」0BE6..0BEF;Gran Taml「：换行：」0BF0..0BF2;Gran Taml「：换行：」0BF3;Gran Taml「：换行：」』
-　否则若「且」于（非（「桶」小于「一二」））于（「桶」小于「一三」）则
+　否则若「俱且」于（非（「桶」小于「一二」））于（「桶」小于「一三」）则
 　　『0CE6..0CEF;Knda Nand Tutg「：换行：」』
-　否则若「且」于（非（「桶」小于「一六」））于（「桶」小于「一七」）则
+　否则若「俱且」于（非（「桶」小于「一六」））于（「桶」小于「一七」）则
 　　『1040..1049;Cakm Mymr Tale「：换行：」10FB;Geor Glag Latn「：换行：」』
-　否则若「且」于（非（「桶」小于「二二」））于（「桶」小于「二三」）则
+　否则若「俱且」于（非（「桶」小于「二二」））于（「桶」小于「二三」）则
 　　『16EB..16ED;Runr「：换行：」』
-　否则若「且」于（非（「桶」小于「二三」））于（「桶」小于「二四」）则
+　否则若「俱且」于（非（「桶」小于「二三」））于（「桶」小于「二四」）则
 　　『1735..1736;Buhd Hano Tagb Tglg「：换行：」』
-　否则若「且」于（非（「桶」小于「二四」））于（「桶」小于「二五」）则
+　否则若「俱且」于（非（「桶」小于「二四」））于（「桶」小于「二五」）则
 　　『1802..1803;Mong Phag「：换行：」1805;Mong Phag「：换行：」』
-　否则若「且」于（非（「桶」小于「二八」））于（「桶」小于「二九」）则
+　否则若「俱且」于（非（「桶」小于「二八」））于（「桶」小于「二九」）则
 　　『1CD0;Beng Deva Gran Knda
 1CD1;Deva
 1CD2;Beng Deva Gran Knda
@@ -119,15 +119,15 @@
 1CF8..1CF9;Deva Gran
 1CFA;Nand
 』
-　否则若「且」于（非（「桶」小于「二九」））于（「桶」小于「三零」）则
+　否则若「俱且」于（非（「桶」小于「二九」））于（「桶」小于「三零」）则
 　　『1DC0..1DC1;Grek「：换行：」1DF8;Cyrl Latn Syrc「：换行：」1DFA;Syrc「：换行：」』
-　否则若「且」于（非（「桶」小于「三二」））于（「桶」小于「三三」）则
+　否则若「俱且」于（非（「桶」小于「三二」））于（「桶」小于「三三」）则
 　　『202F;Latn Mong Phag「：换行：」204F;Adlm Arab「：换行：」205A;Cari Geor Glag Hung Lyci Orkh「：换行：」205D;Cari Grek Hung Mero「：换行：」20F0;Deva Gran Latn「：换行：」』
-　否则若「且」于（非（「桶」小于「四六」））于（「桶」小于「四七」）则
+　否则若「俱且」于（非（「桶」小于「四六」））于（「桶」小于「四七」）则
 　　『2E17;Copt Latn「：换行：」2E30;Avst Orkh「：换行：」2E31;Avst Cari Geor Hung Kthi Lydi Samr「：换行：」2E3C;Dupl「：换行：」2E41;Adlm Arab Hung「：换行：」2E43;Cyrl Glag「：换行：」』
-　否则若「且」于（非（「桶」小于「四七」））于（「桶」小于「四八」）则
+　否则若「俱且」于（非（「桶」小于「四七」））于（「桶」小于「四八」）则
 　　『2FF0..2FFF;Hani Tang「：换行：」』
-　否则若「且」于（非（「桶」小于「四八」））于（「桶」小于「四九」）则
+　否则若「俱且」于（非（「桶」小于「四八」））于（「桶」小于「四九」）则
 　　『3001;Bopo Hang Hani Hira Kana Mong Yiii
 3002;Bopo Hang Hani Hira Kana Mong Phag Yiii
 3003;Bopo Hang Hani Hira Kana
@@ -167,17 +167,17 @@
 30FB;Bopo Hang Hani Hira Kana Yiii
 30FC;Hira Kana
 』
-　否则若「且」于（非（「桶」小于「四九」））于（「桶」小于「五零」）则
+　否则若「俱且」于（非（「桶」小于「四九」））于（「桶」小于「五零」）则
 　　『3190..3191;Hani「：换行：」3192..3195;Hani「：换行：」3196..319F;Hani「：换行：」31C0..31E5;Hani「：换行：」31EF;Hani Tang「：换行：」』
-　否则若「且」于（非（「桶」小于「五零」））于（「桶」小于「五一」）则
+　否则若「俱且」于（非（「桶」小于「五零」））于（「桶」小于「五一」）则
 　　『3220..3229;Hani「：换行：」322A..3247;Hani「：换行：」3280..3289;Hani「：换行：」328A..32B0;Hani「：换行：」32C0..32CB;Hani「：换行：」32FF;Hani「：换行：」』
-　否则若「且」于（非（「桶」小于「五一」））于（「桶」小于「五二」）则
+　否则若「俱且」于（非（「桶」小于「五一」））于（「桶」小于「五二」）则
 　　『3358..3370;Hani「：换行：」337B..337F;Hani「：换行：」33E0..33FE;Hani「：换行：」』
-　否则若「且」于（非（「桶」小于「一六六」））于（「桶」小于「一六七」）则
+　否则若「俱且」于（非（「桶」小于「一六六」））于（「桶」小于「一六七」）则
 　　『A66F;Cyrl Glag「：换行：」』
-　否则若「且」于（非（「桶」小于「一六七」））于（「桶」小于「一六八」）则
+　否则若「俱且」于（非（「桶」小于「一六七」））于（「桶」小于「一六八」）则
 　　『A700..A707;Hani Latn「：换行：」』
-　否则若「且」于（非（「桶」小于「一六八」））于（「桶」小于「一六九」）则
+　否则若「俱且」于（非（「桶」小于「一六八」））于（「桶」小于「一六九」）则
 　　『A830..A832;Deva Dogr Gujr Guru Khoj Knda Kthi Mahj Mlym Modi Nand Shrd Sind Takr Tirh Tutg
 A833..A835;Deva Dogr Gujr Guru Khoj Knda Kthi Mahj Modi Nand Shrd Sind Takr Tirh Tutg
 A836..A837;Deva Dogr Gujr Guru Khoj Kthi Mahj Modi Sind Takr Tirh
@@ -186,13 +186,13 @@ A839;Deva Dogr Gujr Guru Khoj Kthi Mahj Modi Sind Takr Tirh
 A8F1;Beng Deva Tutg
 A8F3;Deva Taml
 』
-　否则若「且」于（非（「桶」小于「一六九」））于（「桶」小于「一七零」）则
+　否则若「俱且」于（非（「桶」小于「一六九」））于（「桶」小于「一七零」）则
 　　『A92E;Kali Latn Mymr「：换行：」A9CF;Bugi Java「：换行：」』
-　否则若「且」于（非（「桶」小于「二五三」））于（「桶」小于「二五四」）则
+　否则若「俱且」于（非（「桶」小于「二五三」））于（「桶」小于「二五四」）则
 　　『FD3E;Arab Nkoo「：换行：」FD3F;Arab Nkoo「：换行：」FDF2;Arab Thaa「：换行：」FDFD;Arab Thaa「：换行：」』
-　否则若「且」于（非（「桶」小于「二五四」））于（「桶」小于「二五五」）则
+　否则若「俱且」于（非（「桶」小于「二五四」））于（「桶」小于「二五五」）则
 　　『FE45..FE46;Bopo Hang Hani Hira Kana「：换行：」』
-　否则若「且」于（非（「桶」小于「二五五」））于（「桶」小于「二五六」）则
+　否则若「俱且」于（非（「桶」小于「二五五」））于（「桶」小于「二五六」）则
 　　『FF61;Bopo Hang Hani Hira Kana Yiii
 FF62;Bopo Hang Hani Hira Kana Yiii
 FF63;Bopo Hang Hani Hira Kana Yiii
@@ -206,23 +206,23 @@ FF9E..FF9F;Hira Kana
 
 「文字扩表一」乃化「数」为「文」者也。
 「文字扩表一」者得「桶」而
-　若「且」于（非（「桶」小于「二五七」））于（「桶」小于「二五八」）则
+　若「俱且」于（非（「桶」小于「二五七」））于（「桶」小于「二五八」）则
 　　『10100..10101;Cpmn Cprt Linb「：换行：」10102;Cprt Linb「：换行：」10107..10133;Cprt Lina Linb「：换行：」10137..1013F;Cprt Linb「：换行：」』
-　否则若「且」于（非（「桶」小于「二五八」））于（「桶」小于「二五九」）则
+　否则若「俱且」于（非（「桶」小于「二五八」））于（「桶」小于「二五九」）则
 　　『102E0;Arab Copt「：换行：」102E1..102FB;Arab Copt「：换行：」』
-　否则若「且」于（非（「桶」小于「二六六」））于（「桶」小于「二六七」）则
+　否则若「俱且」于（非（「桶」小于「二六六」））于（「桶」小于「二六七」）则
 　　『10AF2;Mani Ougr「：换行：」』
-　否则若「且」于（非（「桶」小于「二七五」））于（「桶」小于「二七六」）则
+　否则若「俱且」于（非（「桶」小于「二七五」））于（「桶」小于「二七六」）则
 　　『11301;Gran Taml「：换行：」11303;Gran Taml「：换行：」1133B..1133C;Gran Taml「：换行：」』
-　否则若「且」于（非（「桶」小于「二八七」））于（「桶」小于「二八八」）则
+　否则若「俱且」于（非（「桶」小于「二八七」））于（「桶」小于「二八八」）则
 　　『11FD0..11FD1;Gran Taml「：换行：」11FD3;Gran Taml「：换行：」』
-　否则若「且」于（非（「桶」小于「二九三」））于（「桶」小于「二九四」）则
+　否则若「俱且」于（非（「桶」小于「二九三」））于（「桶」小于「二九四」）则
 　　『12550..12586;Pcun Xsux「：换行：」1258C..1258D;Pcun Xsux「：换行：」1259A..125A7;Pcun Xsux「：换行：」』
-　否则若「且」于（非（「桶」小于「四四四」））于（「桶」小于「四四五」）则
+　否则若「俱且」于（非（「桶」小于「四四四」））于（「桶」小于「四四五」）则
 　　『1BCA0..1BCA3;Dupl「：换行：」』
-　否则若「且」于（非（「桶」小于「四六七」））于（「桶」小于「四六八」）则
+　否则若「俱且」于（非（「桶」小于「四六七」））于（「桶」小于「四六八」）则
 　　『1D360..1D371;Hani「：换行：」』
-　否则若「且」于（非（「桶」小于「四九八」））于（「桶」小于「四九九」）则
+　否则若「俱且」于（非（「桶」小于「四九八」））于（「桶」小于「四九九」）则
 　　『1F250..1F251;Hani「：换行：」』
 　否则
 　　『』

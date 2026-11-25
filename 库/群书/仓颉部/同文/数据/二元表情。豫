@@ -5,7 +5,7 @@
 
 「二元表情表零」乃化「数」为「文」者也。
 「二元表情表零」者得「桶」而
-　若「且」于（非（「桶」小于「零」））于（「桶」小于「一」）则
+　若「俱且」于（非（「桶」小于「零」））于（「桶」小于「一」）则
 　　『0023;Emoji
 002A;Emoji
 0030..0039;Emoji
@@ -17,9 +17,9 @@
 00A9;Extended_Pictographic
 00AE;Extended_Pictographic
 』
-　否则若「且」于（非（「桶」小于「三二」））于（「桶」小于「三三」）则
+　否则若「俱且」于（非（「桶」小于「三二」））于（「桶」小于「三三」）则
 　　『203C;Emoji「：换行：」2049;Emoji「：换行：」200D;Emoji_Component「：换行：」20E3;Emoji_Component「：换行：」203C;Extended_Pictographic「：换行：」2049;Extended_Pictographic「：换行：」』
-　否则若「且」于（非（「桶」小于「三三」））于（「桶」小于「三四」）则
+　否则若「俱且」于（非（「桶」小于「三三」））于（「桶」小于「三四」）则
 　　『2122;Emoji
 2139;Emoji
 2194..2199;Emoji
@@ -29,7 +29,7 @@
 2194..2199;Extended_Pictographic
 21A9..21AA;Extended_Pictographic
 』
-　否则若「且」于（非（「桶」小于「三五」））于（「桶」小于「三六」）则
+　否则若「俱且」于（非（「桶」小于「三五」））于（「桶」小于「三六」）则
 　　『231A..231B;Emoji
 2328;Emoji
 23CF;Emoji
@@ -55,9 +55,9 @@
 23F3;Extended_Pictographic
 23F8..23FA;Extended_Pictographic
 』
-　否则若「且」于（非（「桶」小于「三六」））于（「桶」小于「三七」）则
+　否则若「俱且」于（非（「桶」小于「三六」））于（「桶」小于「三七」）则
 　　『24C2;Emoji「：换行：」24C2;Extended_Pictographic「：换行：」』
-　否则若「且」于（非（「桶」小于「三七」））于（「桶」小于「三八」）则
+　否则若「俱且」于（非（「桶」小于「三七」））于（「桶」小于「三八」）则
 　　『25AA..25AB;Emoji
 25B6;Emoji
 25C0;Emoji
@@ -68,7 +68,7 @@
 25C0;Extended_Pictographic
 25FB..25FE;Extended_Pictographic
 』
-　否则若「且」于（非（「桶」小于「三八」））于（「桶」小于「三九」）则
+　否则若「俱且」于（非（「桶」小于「三八」））于（「桶」小于「三九」）则
 　　『2600..2601;Emoji
 2602..2603;Emoji
 2604;Emoji
@@ -197,7 +197,7 @@
 26FA;Extended_Pictographic
 26FD;Extended_Pictographic
 』
-　否则若「且」于（非（「桶」小于「三九」））于（「桶」小于「四零」）则
+　否则若「俱且」于（非（「桶」小于「三九」））于（「桶」小于「四零」）则
 　　『2702;Emoji
 2705;Emoji
 2708..270C;Emoji
@@ -259,9 +259,9 @@
 27B0;Extended_Pictographic
 27BF;Extended_Pictographic
 』
-　否则若「且」于（非（「桶」小于「四一」））于（「桶」小于「四二」）则
+　否则若「俱且」于（非（「桶」小于「四一」））于（「桶」小于「四二」）则
 　　『2934..2935;Emoji「：换行：」2934..2935;Extended_Pictographic「：换行：」』
-　否则若「且」于（非（「桶」小于「四三」））于（「桶」小于「四四」）则
+　否则若「俱且」于（非（「桶」小于「四三」））于（「桶」小于「四四」）则
 　　『2B05..2B07;Emoji
 2B1B..2B1C;Emoji
 2B50;Emoji
@@ -274,11 +274,11 @@
 2B50;Extended_Pictographic
 2B55;Extended_Pictographic
 』
-　否则若「且」于（非（「桶」小于「四八」））于（「桶」小于「四九」）则
+　否则若「俱且」于（非（「桶」小于「四八」））于（「桶」小于「四九」）则
 　　『3030;Emoji「：换行：」303D;Emoji「：换行：」3030;Extended_Pictographic「：换行：」303D;Extended_Pictographic「：换行：」』
-　否则若「且」于（非（「桶」小于「五零」））于（「桶」小于「五一」）则
+　否则若「俱且」于（非（「桶」小于「五零」））于（「桶」小于「五一」）则
 　　『3297;Emoji「：换行：」3299;Emoji「：换行：」3297;Extended_Pictographic「：换行：」3299;Extended_Pictographic「：换行：」』
-　否则若「且」于（非（「桶」小于「二五四」））于（「桶」小于「二五五」）则
+　否则若「俱且」于（非（「桶」小于「二五四」））于（「桶」小于「二五五」）则
 　　『FE0F;Emoji_Component「：换行：」』
 　否则
 　　『』
@@ -286,7 +286,7 @@
 
 「二元表情表一」乃化「数」为「文」者也。
 「二元表情表一」者得「桶」而
-　若「且」于（非（「桶」小于「四九六」））于（「桶」小于「四九七」）则『1F004;Emoji
+　若「俱且」于（非（「桶」小于「四九六」））于（「桶」小于「四九七」）则『1F004;Emoji
 1F0CF;Emoji
 1F004;Emoji_Presentation
 1F0CF;Emoji_Presentation
@@ -298,7 +298,7 @@
 1F0CF;Extended_Pictographic
 1F0D0;Extended_Pictographic
 1F0F6..1F0FF;Extended_Pictographic
-』否则若「且」于（非（「桶」小于「四九七」））于（「桶」小于「四九八」）则『1F170..1F171;Emoji
+』否则若「俱且」于（非（「桶」小于「四九七」））于（「桶」小于「四九八」）则『1F170..1F171;Emoji
 1F17E..1F17F;Emoji
 1F18E;Emoji
 1F191..1F19A;Emoji
@@ -312,7 +312,7 @@
 1F18E;Extended_Pictographic
 1F191..1F19A;Extended_Pictographic
 1F1AF..1F1E5;Extended_Pictographic
-』否则若「且」于（非（「桶」小于「四九八」））于（「桶」小于「四九九」）则『1F201..1F202;Emoji
+』否则若「俱且」于（非（「桶」小于「四九八」））于（「桶」小于「四九九」）则『1F201..1F202;Emoji
 1F21A;Emoji
 1F22F;Emoji
 1F232..1F23A;Emoji
@@ -333,7 +333,7 @@
 1F250..1F251;Extended_Pictographic
 1F252..1F25F;Extended_Pictographic
 1F266..1F2FF;Extended_Pictographic
-』否则若「且」于（非（「桶」小于「四九九」））于（「桶」小于「五零零」）则『1F300..1F30C;Emoji
+』否则若「俱且」于（非（「桶」小于「四九九」））于（「桶」小于「五零零」）则『1F300..1F30C;Emoji
 1F30D..1F30E;Emoji
 1F30F;Emoji
 1F310;Emoji
@@ -481,7 +481,7 @@
 1F3F5;Extended_Pictographic
 1F3F7;Extended_Pictographic
 1F3F8..1F3FA;Extended_Pictographic
-』否则若「且」于（非（「桶」小于「五零零」））于（「桶」小于「五零一」）则『1F3F8..1F407;Emoji
+』否则若「俱且」于（非（「桶」小于「五零零」））于（「桶」小于「五零一」）则『1F3F8..1F407;Emoji
 1F408;Emoji
 1F409..1F40B;Emoji
 1F40C..1F40E;Emoji
@@ -594,7 +594,7 @@
 1F4F9..1F4FC;Extended_Pictographic
 1F4FD;Extended_Pictographic
 1F4FF..1F502;Extended_Pictographic
-』否则若「且」于（非（「桶」小于「五零一」））于（「桶」小于「五零二」）则『1F4FF..1F502;Emoji
+』否则若「俱且」于（非（「桶」小于「五零一」））于（「桶」小于「五零二」）则『1F4FF..1F502;Emoji
 1F503;Emoji
 1F504..1F507;Emoji
 1F508;Emoji
@@ -687,7 +687,7 @@
 1F5F3;Extended_Pictographic
 1F5FA;Extended_Pictographic
 1F5FB..1F5FF;Extended_Pictographic
-』否则若「且」于（非（「桶」小于「五零二」））于（「桶」小于「五零三」）则『1F600;Emoji
+』否则若「俱且」于（非（「桶」小于「五零二」））于（「桶」小于「五零三」）则『1F600;Emoji
 1F601..1F606;Emoji
 1F607..1F608;Emoji
 1F609..1F60D;Emoji
@@ -952,7 +952,7 @@
 1F6FA;Extended_Pictographic
 1F6FB..1F6FC;Extended_Pictographic
 1F6FD..1F6FF;Extended_Pictographic
-』否则若「且」于（非（「桶」小于「五零三」））于（「桶」小于「五零四」）则『1F7E0..1F7EB;Emoji
+』否则若「俱且」于（非（「桶」小于「五零三」））于（「桶」小于「五零四」）则『1F7E0..1F7EB;Emoji
 1F7F0;Emoji
 1F7E0..1F7EB;Emoji_Presentation
 1F7F0;Emoji_Presentation
@@ -960,7 +960,7 @@
 1F7E0..1F7EB;Extended_Pictographic
 1F7EC..1F7EF;Extended_Pictographic
 1F7F0;Extended_Pictographic
-』否则若「且」于（非（「桶」小于「五零四」））于（「桶」小于「五零五」）则『1F80C..1F80F;Extended_Pictographic
+』否则若「俱且」于（非（「桶」小于「五零四」））于（「桶」小于「五零五」）则『1F80C..1F80F;Extended_Pictographic
 1F848..1F84F;Extended_Pictographic
 1F85A..1F85F;Extended_Pictographic
 1F888..1F88F;Extended_Pictographic
@@ -968,7 +968,7 @@
 1F8BC..1F8BF;Extended_Pictographic
 1F8C2..1F8CF;Extended_Pictographic
 1F8D9..1F8FF;Extended_Pictographic
-』否则若「且」于（非（「桶」小于「五零五」））于（「桶」小于「五零六」）则『1F90C;Emoji
+』否则若「俱且」于（非（「桶」小于「五零五」））于（「桶」小于「五零六」）则『1F90C;Emoji
 1F90D..1F90F;Emoji
 1F910..1F918;Emoji
 1F919..1F91E;Emoji
@@ -1120,7 +1120,7 @@
 1F9CD..1F9CF;Extended_Pictographic
 1F9D0..1F9E6;Extended_Pictographic
 1F9E7..1F9FF;Extended_Pictographic
-』否则若「且」于（非（「桶」小于「五零六」））于（「桶」小于「五零七」）则『1FA70..1FA73;Emoji
+』否则若「俱且」于（非（「桶」小于「五零六」））于（「桶」小于「五零七」）则『1FA70..1FA73;Emoji
 1FA74;Emoji
 1FA75..1FA77;Emoji
 1FA78..1FA7A;Emoji
@@ -1264,7 +1264,7 @@
 1FAF7..1FAF8;Extended_Pictographic
 1FAF9..1FAFA;Extended_Pictographic
 1FAFB..1FAFF;Extended_Pictographic
-』否则若「且」于（非（「桶」小于「五零八」））于（「桶」小于「五一二」）则『1FC00..1FFFD;Extended_Pictographic「：换行：」』否则『』
+』否则若「俱且」于（非（「桶」小于「五零八」））于（「桶」小于「五一二」）则『1FC00..1FFFD;Extended_Pictographic「：换行：」』否则『』
 也。
 
 「二元表情表二」乃化「数」为「文」者也。
@@ -1329,7 +1329,7 @@
 
 「二元表情表一四」乃化「数」为「文」者也。
 「二元表情表一四」者得「桶」而
-　若「且」于（非（「桶」小于「三五八四」））于（「桶」小于「三五八五」）则『E0020..E007F;Emoji_Component「：换行：」』否则『』
+　若「俱且」于（非（「桶」小于「三五八四」））于（「桶」小于「三五八五」）则『E0020..E007F;Emoji_Component「：换行：」』否则『』
 也。
 
 「二元表情表一五」乃化「数」为「文」者也。
