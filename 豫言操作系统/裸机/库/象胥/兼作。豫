@@ -170,7 +170,7 @@
 　「栈除」立「栈算种」也。
 　「栈反除」立「栈算种」也。
 
-「：汉语：通称 x87 单操作种：FCHS 变号、FABS 绝对值、FSQRT 开方、FRNDINT 按控制字舍入取整、FSCALE 乘二的 ST1 次幂、FINCSTP 与 FFREEP 栈顶加一、FDECSTP 栈顶减一、FNINIT 复位、FTST 与零比、FXAM 分类、FNCLEX 与 FFREE 不做事。
+「：汉语：通称 x87 单操作种：FCHS 变号、FABS 绝对值、FSQRT 开方、FRNDINT 按控制字舍入取整、FSCALE 乘二的 ST1 次幂、FINCSTP 与 FFREEP 栈顶加一、FDECSTP 栈顶减一、FNINIT 复位、FTST 与零比、FXAM 分类、FNCLEX 与 FFREE 不做事、FPREM 求 ST0 除以 ST1 的余数（商向零截断）、FPREM1 求余数（商就近取偶）。
 　　文言：x87 单作之种。：」
 「栈一种」立「类」也。
 　「栈变号」立「栈一种」也。
@@ -184,6 +184,8 @@
 　「栈测零」立「栈一种」也。
 　「栈察」立「栈一种」也。
 　「栈空」立「栈一种」也。
+　「栈余」立「栈一种」也。
+　「栈近余」立「栈一种」也。
 
 「：汉语：通称 x87 常数种：FLDZ 零、FLD1 一、FLDPI 圆周率、FLDL2T 以二为底十的对数、FLDL2E 以二为底 e 的对数、FLDLG2 以十为底二的对数、FLDLN2 二的自然对数。
 　　文言：x87 常数之种。：」
