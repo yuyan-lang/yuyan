@@ -6,7 +6,8 @@ const 发片长 = 1 << 20;
 const 原因 = {0: '成功', 2: '令牌或来源核验失败', 8: '无效的连接句柄', 14: '连接被拒绝', 15: '连接被重置', 19: '连接配额已尽', 28: '参数或中继协议消息无效', 58: '操作不支持（客户端 TCP 需配置中继）', 64: '连接的写方向已关闭', 73: '连接超时', 76: '目标无效或越出许可范围'};
 
 export class 中继客 {
-  constructor(配置) { this.配置 = 配置; this.连接们 = new Map(); this.下号 = 1; }
+  // 汉语：取号 是进程表给的号源（连接号与子进程号同出一计，群候据号分得清），有事 在连接状态变了时调（叫醒群候里等它的线程）；单独用时连接号从一起。文言：取号为程表所授之号源，有事于连态易时呼之；独用则自一起。
+  constructor(配置, {取号 = null, 有事 = null} = {}) { this.配置 = 配置; this.连接们 = new Map(); this.下号 = 1; this.取号 = 取号; this.有事 = 有事; }
   误由(码) { return 原因[Math.abs(Number(码))] ?? ('网络错误（码 ' + 码 + '）'); }
   叩门(主机, 端口) {
     if (!this.配置?.地址) return [-58n, 0n];
@@ -19,7 +20,7 @@ export class 中继客 {
       址.searchParams.set('主机', 主机); 址.searchParams.set('端口', String(端口));
       舟 = new WebSocket(址);
     } catch { return [-28n, 0n]; }
-    const 柄 = this.下号++, 连 = {舟, 已连: false, 已闭: false, 缄: false, 误: 0, 块们: [], 偏: 0, 候们: new Set()};
+    const 柄 = this.取号 ? this.取号() : this.下号++, 连 = {舟, 已连: false, 已闭: false, 缄: false, 误: 0, 块们: [], 偏: 0, 候们: new Set()};
     this.连接们.set(柄, 连);
     舟.binaryType = 'arraybuffer';
     const 败 = 码 => { 连.误 ||= 码; 连.已闭 = true; this.唤(连); };
@@ -41,7 +42,7 @@ export class 中继客 {
     };
     return [1n, BigInt(柄)];
   }
-  唤(连) { for (const 候 of [...连.候们]) 候(); }
+  唤(连) { for (const 候 of [...连.候们]) 候(); this.有事?.(); }
   事件(连, 关注) {
     return ((连.块们.length || 连.已闭 ? 1 : 0) & 关注) |
       ((连.已连 && !连.已闭 && 连.舟.readyState === WebSocket.OPEN ? 2 : 0) & 关注) | (连.误 ? 4 : 0) | (连.已闭 ? 8 : 0);
