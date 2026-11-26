@@ -10,6 +10,9 @@ import {中继客} from './中继客.mjs';
 
 const 编码器 = new TextEncoder(), 解码器 = new TextDecoder();
 const 块长 = 1 << 20;
+// 汉语：被信号结束的任务的收场码（2026-11-26，议题 #1289）：照豫章结局码的「信号止码」写二百五十六加信号号，落在零至二百五十五的退出码之外；打断（同 Ctrl-C）是信号二，召回与停表是信号十五。原先写一百三十、一百四十三（一百二十八加信号号），与正常退出码重合。
+// 文言：为信号所止之役之收场码：依豫章结局码之信号止码书二百五十六加信号号，在零至二百五十五之退码之外；断（同 Ctrl-C）为信号二，召还与停表为信号十五。
+const 信号止基 = 256, 打断止码 = 信号止基 + 2, 请止止码 = 信号止基 + 15;
 const 输出上限 = 256 * 1024 * 1024;
 const 末名 = 径 => 径.slice(径.lastIndexOf('/') + 1);
 const 是网页汇编字节 = 内容 => 内容.length >= 4 && 内容[0] === 0 && 内容[1] === 0x61 && 内容[2] === 0x73 && 内容[3] === 0x6d;
@@ -153,7 +156,7 @@ export class 进程表 {
     let 模块;
     try { 模块 = await this.取模块(候选); }
     catch (错) { this.收输出(记录, 2, 编码器.encode('构建宿主：程序不能编译：' + 候选 + '：' + 错.message + '\n')); this.结束(记录, 126); return 记录.号; }
-    if (this.已停) { this.结束(记录, 143); return 记录.号; }
+    if (this.已停) { this.结束(记录, 请止止码); return 记录.号; }
     if (记录.完成) return 记录.号;
     const 线 = this.取线程();
     线.号 = 记录.号; 记录.线 = 线;
@@ -480,7 +483,7 @@ export class 进程表 {
       case '亲行': return this.亲行(记录?.号 ?? 0, 参[0], 参[1], 参[2], 参[3], 参[4]);
       case '读行': return this.读行(记录);
       case '页杂凑': return this.页杂凑(参[0], 参[1]);
-      case '召回': { const 子 = this.记录们.get(参[0]); if (!子) return 8; this.终止(子, 143); return 0; }
+      case '召回': { const 子 = this.记录们.get(参[0]); if (!子) return 8; this.终止(子, 请止止码); return 0; }
       // 文言：辍役（同终端之 Ctrl-C，同裸机）：号正则断其务及诸子孙，号负则惟断负号之子孙；退码皆百三十。果零成，一无可断之子孙，二已置本务之断标，八号不合。
       // 汉语：打断任务（同终端 Ctrl-C，语义同裸机）：号为正打断这个任务与它的全部子孙，号为负只打断任务 −号 的子孙；退出码都是 130。结果零成功，一没有可打断的子孙，二已给这个任务置上打断标志，八任务号不对。
       case '辍役': return this.辍役(参[0]);
@@ -498,8 +501,8 @@ export class 进程表 {
     if (!根 || 根.完成) return 8;
     const 子孙们 = [], 寻 = 父 => { for (const 记 of this.记录们.values()) if (记.父号 === 父 && !记.完成) { 子孙们.push(记); 寻(记.号); } };
     寻(根.号);
-    for (const 记 of 子孙们.reverse()) this.终止(记, 130);
-    if (号 > 0) { this.终止(根, 130); return 0; }
+    for (const 记 of 子孙们.reverse()) this.终止(记, 打断止码);
+    if (号 > 0) { this.终止(根, 打断止码); return 0; }
     if (子孙们.length) return 0;
     const 线 = 根.线;
     const 打断 = this.异步 ? 根.打断 : 线?.打断;
@@ -627,6 +630,6 @@ export class 进程表 {
     for (const 线 of this.线程们) { this.回收线程(线); if (线.待候) clearTimeout(线.待候.定时); }
     this.线程们 = [];
     // 汉语：结束诸记录时会删去无人收取的子记录，故先取一份快照再逐个结束。文言：终诸录之时或除无人收之子录，故先取其列而后遍终之。
-    for (const 记录 of [...this.记录们.values()]) { 记录.线 = null; this.结束(记录, 143); }
+    for (const 记录 of [...this.记录们.values()]) { 记录.线 = null; this.结束(记录, 请止止码); }
   }
 }
