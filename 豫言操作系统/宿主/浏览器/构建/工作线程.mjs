@@ -435,15 +435,21 @@ function 运行(任务) {
     单元界 ??= {表: new WebAssembly.Table({element: 'anyfunc', initial: 0}), 标签: {escape: new WebAssembly.Tag({parameters: ['eqref', 'eqref']}), error: new WebAssembly.Tag({parameters: ['eqref']})}, 导出们: new Map()};
     const 模 = 取编模(模块缓存, 字, () => new WebAssembly.Module(字)), 基 = 单元界.表.length;
     单元界.表.grow(元素数(字));
-    const 单元 = {};
+    const 单元 = {}, 共常 = {};
+    // 文言：共常之导入（构常，字段为内容键）：有则共之，无则新开一可变之全局，初为空引，由本卷启端见空乃造（议一八八二）。
+    // 汉语：“共常”的导入（构造常量，字段是内容键）：已有就共用，没有就新开一个可变全局，初值空引用，由本单元的启动函数见空才造（#1882）。
+    单元界.共常们 ??= new Map();
     for (const 导 of WebAssembly.Module.imports(模)) if (导.module === '单元') {
       if (!单元界.导出们.has(导.name)) throw Error('单元导入未找到：' + 导.name + '（' + 名 + '）');
       单元[导.name] = 单元界.导出们.get(导.name);
+    } else if (导.module === '共常') {
+      if (!单元界.共常们.has(导.name)) 单元界.共常们.set(导.name, new WebAssembly.Global({value: 'eqref', mutable: true}, null));
+      共常[导.name] = 单元界.共常们.get(导.name);
     }
     const 运行时 = {表: 单元界.表, 表基: new WebAssembly.Global({value: 'i32', mutable: false}, 基), escape: 单元界.标签.escape, error: 单元界.标签.error};
     // 文言：辍察之一导入（提案〇〇〇四三第六步）：断例，诸单元共之，例读断字，见标则抛。
     // 汉语：打断检查点的一个导入（提案 00043 第六步）：打断例程，各单元共用；例程读标志字，见标就抛。
-    const 实例 = new WebAssembly.Instance(模, {...造边界导入(模, 桥, 诸实现, 边界选项), 运行时, 单元, 'yuyan:browser/v1': 浏览器导入});
+    const 实例 = new WebAssembly.Instance(模, {...造边界导入(模, 桥, 诸实现, 边界选项), 运行时, 单元, 共常, 'yuyan:browser/v1': 浏览器导入});
     for (const [出名, 值] of Object.entries(实例.exports)) 单元界.导出们.set(出名, 值);
     return 实例;
   };
