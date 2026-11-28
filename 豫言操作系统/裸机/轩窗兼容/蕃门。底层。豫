@@ -122,7 +122,7 @@
 　「比」于「零」
 也。
 
-「：汉语：本层认得的 DLL：kernel32.dll、kernelbase.dll、接口集 api-ms-win-core-*（都映到 kernel32 的名字）、shlwapi.dll、ntdll.dll（kernel32 里转发到 ntdll 的 Rtl 函数同名）、bcryptprimitives.dll（ProcessPrng），以及 C 运行库 ucrtbase.dll、接口集 api-ms-win-crt-*、msvcrt.dll 与 vcruntime140*.dll（2026-11-28，函数在「运行库」篇），不分大小写。待办事项：这张 DLL 清单与「接口表」是两处要人对齐的表（2026-11-28 加 C 运行库时先只登了接口、漏了这里，跑起来才撞上“未实现的接口”），宜在接口表里给每个接口标所属的 DLL 族（元类型鉴尽），由它推出认得的 DLL。
+「：汉语：本层认得的 DLL：kernel32.dll、kernelbase.dll、接口集 api-ms-win-core-*（都映到 kernel32 的名字）、shlwapi.dll、ntdll.dll（kernel32 里转发到 ntdll 的 Rtl 函数同名）、bcryptprimitives.dll（ProcessPrng）、bcrypt.dll（BCryptGenRandom，2026-11-28），以及 C 运行库 ucrtbase.dll、接口集 api-ms-win-crt-*、msvcrt.dll 与 vcruntime140*.dll（2026-11-28，函数在「运行库」篇），不分大小写。待办事项：这张 DLL 清单与「接口表」是两处要人对齐的表（2026-11-28 加 C 运行库时先只登了接口、漏了这里，跑起来才撞上“未实现的接口”），宜在接口表里给每个接口标所属的 DLL 族（元类型鉴尽），由它推出认得的 DLL。
 　　文言：此层所识之 DLL：kernel32、kernelbase、api-ms-win-core- 诸接口集、shlwapi，与 C 运行库之 ucrtbase、api-ms-win-crt- 诸接口集、msvcrt、vcruntime140。：」
 「库认得」乃化「本址」为「爻」者也。
 「库认得」者得「库」而
@@ -132,6 +132,7 @@
 　或（「串同」于「址」曰「库」于「串」曰（「静态文」于『shlwapi.dll』）于「略」曰「阳」）
 　或（「串同」于「址」曰「库」于「串」曰（「静态文」于『ntdll.dll』）于「略」曰「阳」）
 　或（「串同」于「址」曰「库」于「串」曰（「静态文」于『bcryptprimitives.dll』）于「略」曰「阳」）
+　或（「串同」于「址」曰「库」于「串」曰（「静态文」于『bcrypt.dll』）于「略」曰「阳」）
 　或（「串同」于「址」曰「库」于「串」曰（「静态文」于『ucrtbase.dll』）于「略」曰「阳」）
 　或（「串首同」于「址」曰「库」于「串」曰（「静态文」于『api-ms-win-crt-』）于「略」曰「阳」）
 　或（「串同」于「址」曰「库」于「串」曰（「静态文」于『msvcrt.dll』）于「略」曰「阳」）
